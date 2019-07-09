@@ -8,7 +8,7 @@ using System.Windows.Input;
 // https://www.technical-recipes.com/2017/how-to-use-interaction-triggers-to-handle-user-initiated-events-in-wpf-mvvm/
 // https://www.technical-recipes.com/2016/using-relaycommand-icommand-to-handle-events-in-wpf-and-mvvm/
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // START MVVM RelayCommand Class ----------------------------------------------------------------------------------------------------
     public class RelayCommand<T> : ICommand

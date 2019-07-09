@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     public static class MessageBoxEnhanced
     {

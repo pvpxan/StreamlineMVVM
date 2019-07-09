@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // START ConfigManager Class --------------------------------------------------------------------------------------------------------
     public static class Config

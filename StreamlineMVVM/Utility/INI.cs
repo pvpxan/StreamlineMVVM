@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // START INI_Class ------------------------------------------------------------------------------------------------------------------
     public static class INI

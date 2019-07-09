@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // START LogWriter_Class ------------------------------------------------------------------------------------------------------------
     public static class LogWriter

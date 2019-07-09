@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C7B1AD9E-14AE-45DF-8E14-78A9BE9AE738}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>MVVM</RootNamespace>
+    <RootNamespace>StreamlineMVVM</RootNamespace>
     <AssemblyName>StreamlineMVVM</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -105,7 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\DataTemplate.xaml">
+    <Page Include="Templates\DataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

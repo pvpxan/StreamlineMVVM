@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     /// <summary>
     /// Interaction logic for WindowsMessage.xaml

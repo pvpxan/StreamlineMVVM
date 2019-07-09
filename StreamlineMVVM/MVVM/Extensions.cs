@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // Using these requires a reference in the XAML:
     // xmlns:ext="clr-namespace:MVVM;assembly=MVVM"

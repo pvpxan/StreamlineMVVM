@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace MVVM
+namespace StreamlineMVVM
 {
     // START LogWriterWPF_Class ---------------------------------------------------------------------------------------------------------
     public static class LogWriterWPF
