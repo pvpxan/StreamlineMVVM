@@ -5,6 +5,6 @@
 # Usage
 * Add Reference: StreamlineMVVM.dll
 * Add Application Resource:
-  * `<ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/DataTemplates.xaml" />`
+  * `<ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/DataTemplates.xaml"/>`
 
 More Documention to come...
