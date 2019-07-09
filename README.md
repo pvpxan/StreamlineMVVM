@@ -4,6 +4,6 @@ MVVM Framework with enhanced windows messagebox, logging utility, config file ha
 Also can add custom dialogs by creating a User Control and using that as the DataTemplate for window content.
 
 Add Reference to StreamlineMVVM.dll
-Add Application Resource: <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/DataTemplates.xaml" />
+Add Application Resource: `<ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/DataTemplates.xaml" />`
 
 More Documention to come...
