@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace StreamlineMVVM
 {
@@ -78,10 +76,17 @@ namespace StreamlineMVVM
         {
             if (OnContentRendered != null)
             {
-                Application.Current.Dispatcher.Invoke((Action)delegate
+                if (Application.Current != null)
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        OnContentRendered();
+                    });
+                }
+                else
                 {
                     OnContentRendered();
-                });
+                }
             }
         }
 
@@ -95,6 +100,7 @@ namespace StreamlineMVVM
         public string WindowTitle = "";
         public Brush Background = Brushes.White;
         public bool Topmost = true;
+        public WindowStartupLocation DialogStartupLocation = WindowStartupLocation.CenterOwner;
 
         public WindowStyle DialogWindowStyle = WindowStyle.ToolWindow;
         public string WindowIconURI = "";
@@ -124,8 +130,17 @@ namespace StreamlineMVVM
 
     public static class DialogService
     {
-        public static WindowMessageResult OpenDialog(DialogBaseWindowViewModel viewmodel, Window parentWindow)
+        // Takes a ViewModel based user control and opens a window with that control as content. Provides the ability to set Application object ShutdownMode.
+        public static WindowMessageResult OpenDialog(DialogBaseWindowViewModel viewmodel, Window parentWindow, ShutdownMode shutdownMode)
         {
+            // This is used to prevent the Application.Current from going null. It can be turned off by setting ApplicationExplicitShutdown.
+            // If this returns in this manner, you did something wrong and used this libary in correctly.
+            if (Application.Current == null)
+            {
+                return WindowMessageResult.Undefined;
+            }
+
+            Application.Current.ShutdownMode = shutdownMode;
             DialogBaseWindow dialogBaseWindow = new DialogBaseWindow();
             if (parentWindow != null)
             {
@@ -134,8 +149,42 @@ namespace StreamlineMVVM
 
             dialogBaseWindow.DataContext = viewmodel;
             dialogBaseWindow.ShowDialog();
-            WindowMessageResult result = (dialogBaseWindow.DataContext as DialogBaseWindowViewModel).UserDialogResult;
+
+            WindowMessageResult result = WindowMessageResult.Undefined;
+            try
+            {
+                // This will allow for use of this method from threads outside the UI thread.
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    result = (dialogBaseWindow.DataContext as DialogBaseWindowViewModel).UserDialogResult;
+                });
+            }
+            catch
+            {
+                // TODO (DB): This probably does not need to have anything here.
+            }
+
             return result;
+        }
+
+        // Same as above but also provides but with a default Application object ShutdownMode set to ShutdownMode.OnLastWindowClose.
+        public static WindowMessageResult OpenDialog(DialogBaseWindowViewModel viewmodel, Window parentWindow)
+        {
+            return OpenDialog(viewmodel, parentWindow, ShutdownMode.OnLastWindowClose);
+        }
+
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, Window parentWindow)
+        {
+            DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
+            return OpenDialog(viewmodel, parentWindow, ShutdownMode.OnLastWindowClose);
+        }
+
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, Window parentWindow, ShutdownMode shutdownMode)
+        {
+            DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
+            return OpenDialog(viewmodel, parentWindow, shutdownMode);
         }
     }
 }

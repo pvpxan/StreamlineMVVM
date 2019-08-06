@@ -11,7 +11,7 @@
         BorderThickness="1" BorderBrush="#FF007ACC" Background="Black"
         WindowStyle="{Binding DialogWindowStyle}" Topmost="{Binding Topmost}"
         SizeToContent="WidthAndHeight"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="{Binding DialogStartupLocation}">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:WindowsMessageViewModel}">

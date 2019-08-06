@@ -20,7 +20,7 @@ namespace StreamlineMVVM
         {
             return displayDialog(dialogDataBuilder(parentWindow, windowTitle, contentHeader));
         }
-
+        // ------------------------------------------
 
         // Sets Window Title, Message Content, Message Buttons, and Message Icon.
         public static WindowMessageResult Show(string windowTitle, string contentHeader, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
@@ -33,7 +33,7 @@ namespace StreamlineMVVM
         {
             return displayDialog(dialogDataBuilder(parentWindow, windowTitle, contentHeader, "", "", "", windowMessageButtons, windowMessageIcon));
         }
-
+        // ------------------------------------------
 
         // Sets Window Title, Message Header, Message Body, Message Buttons, and Message Icon.
         public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
@@ -46,7 +46,7 @@ namespace StreamlineMVVM
         {
             return displayDialog(dialogDataBuilder(parentWindow, windowTitle, contentHeader, contentBody, "", "", windowMessageButtons, windowMessageIcon));
         }
-
+        // ------------------------------------------
 
         // Sets Window Title, Message Header, Message Body, Message HyperLink, Message Buttons, and Message Icon.
         public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, string hyperLink, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
@@ -59,7 +59,7 @@ namespace StreamlineMVVM
         {
             return displayDialog(dialogDataBuilder(parentWindow, windowTitle, contentHeader, contentBody, "", hyperLink, windowMessageButtons, windowMessageIcon));
         }
-
+        // ------------------------------------------
 
         // Sets Window Title, Message Header, Message Body, Message HyperLink Text, Message HyperLink Uri, Message Buttons, and Message Icon.
         public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, string hyperLinkText, string hyperLinkUri, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
@@ -84,6 +84,7 @@ namespace StreamlineMVVM
         {
             return displayDialog(dialogDataBuilder(parentWindow, windowTitle, contentHeader, contentBody, hyperLinkText, hyperLinkUri, windowMessageButtons, windowMessageIcon));
         }
+        // ------------------------------------------
 
         private static DialogData dialogDataBuilder(
             Window parentWindow = null,
@@ -157,9 +158,10 @@ namespace StreamlineMVVM
         {
             DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
 
-            if (data.ParentWindow == null)
+            Window window = data.ParentWindow;
+
+            if (window == null)
             {
-                Window window = null;
                 try
                 {
                     window = Application.Current.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
@@ -171,16 +173,9 @@ namespace StreamlineMVVM
                         window = Application.Current.Windows[0];
                     }
                 }
-
-                if (window == null)
-                {
-                    return WindowMessageResult.Undefined;
-                }
-
-                return DialogService.OpenDialog(viewmodel, window);
             }
 
-            return DialogService.OpenDialog(viewmodel, data.ParentWindow);
+            return DialogService.OpenDialog(viewmodel, window, ShutdownMode.OnLastWindowClose);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,10 +24,15 @@ namespace StreamlineMVVM
 
         public DialogBaseWindow()
         {
+            if (Application.Current == null)
+            {
+                MessageBox.Show(this, "Window load error: " + Environment.NewLine + "The Application object has been shutdown or is null.", "Error...", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 InitializeComponent();
-
                 Loaded += contentLoaded;
             }
             catch (Exception Ex)
@@ -65,6 +71,7 @@ namespace StreamlineMVVM
     {
         public string WindowTitle { get; private set; }
         public bool Topmost { get; private set; }
+        public WindowStartupLocation DialogStartupLocation { get; set; }
 
         public WindowStyle DialogWindowStyle { get; private set; }
         public ImageSource WindowIcon { get; private set; }
@@ -82,6 +89,7 @@ namespace StreamlineMVVM
         {
             WindowTitle = data.WindowTitle;
             Topmost = data.Topmost;
+            DialogStartupLocation = data.DialogStartupLocation;
             DialogWindowStyle = data.DialogWindowStyle;
 
             try
@@ -90,14 +98,10 @@ namespace StreamlineMVVM
                 {
                     WindowIcon = BitmapFrame.Create(new Uri(data.WindowIconURI, UriKind.RelativeOrAbsolute));
                 }
-                else
-                {
-                    WindowIcon = Application.Current.MainWindow.Icon;
-                }
             }
             catch
             {
-                WindowIcon = Application.Current.MainWindow.Icon;
+                // TODO (DB):  Find a way to extract the application icon and assign it.
             }
 
             RequireResult = data.RequireResult;
