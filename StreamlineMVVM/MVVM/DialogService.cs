@@ -100,9 +100,8 @@ namespace StreamlineMVVM
         public string WindowTitle = "";
         public Brush Background = Brushes.White;
         public bool Topmost = true;
-        public WindowStartupLocation DialogStartupLocation = WindowStartupLocation.CenterOwner;
-
         public WindowStyle DialogWindowStyle = WindowStyle.ToolWindow;
+        public WindowStartupLocation DialogStartupLocation = WindowStartupLocation.CenterOwner;
         public string WindowIconURI = "";
 
         public bool RequireResult = false;
@@ -141,7 +140,7 @@ namespace StreamlineMVVM
             }
 
             Application.Current.ShutdownMode = shutdownMode;
-            DialogBaseWindow dialogBaseWindow = new DialogBaseWindow();
+            DialogBaseWindow dialogBaseWindow = new DialogBaseWindow(viewmodel.dialogData);
             if (parentWindow != null)
             {
                 dialogBaseWindow.Owner = parentWindow;
