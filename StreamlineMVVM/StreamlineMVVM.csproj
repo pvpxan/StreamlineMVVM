@@ -77,7 +77,7 @@
     <Compile Include="Utility\Config.cs" />
     <Compile Include="Utility\INI.cs" />
     <Compile Include="Utility\LogWriterConsole.cs" />
-    <Compile Include="Utility\LogWriterWPF.cs" />
+    <Compile Include="Utility\LogWriterExtended.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -105,7 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\DataTemplates.xaml">
+    <Page Include="Templates\MergedResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace StreamlineMVVM
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
