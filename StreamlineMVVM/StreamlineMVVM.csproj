@@ -75,6 +75,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Utility\Config.cs" />
+    <Compile Include="Utility\SystemIO.cs" />
     <Compile Include="Utility\INI.cs" />
     <Compile Include="Utility\LogWriterConsole.cs" />
     <Compile Include="Utility\LogWriterExtended.cs" />

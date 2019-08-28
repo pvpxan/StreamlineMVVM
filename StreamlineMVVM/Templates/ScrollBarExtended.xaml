@@ -10,11 +10,11 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Grid x:Name="Grid">
                         <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                       Width="Auto" Height="Auto" Fill="Transparent"/>
+                                   Width="Auto" Height="Auto" Fill="Transparent"/>
                         <Border x:Name="Rectangle1" CornerRadius="5"
-                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    Width="Auto" Height="Auto" Margin="2,2,8,-2"
-                                    Background="{TemplateBinding Background}"/>
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Width="Auto" Height="Auto" Margin="2,2,8,-2"
+                                Background="{TemplateBinding Background}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Tag" Value="Horizontal">
@@ -33,6 +33,10 @@
         <Setter Property="Foreground" Value="SteelBlue" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Width" Value="8" />
+        <Setter Property="ext:Extensions.MouseOverBackground" Value="DodgerBlue"/>
+        <Setter Property="ext:Extensions.MouseDownBackground" Value="RoyalBlue"/>
+
+        <!-- Template for ScrollBar style -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -56,10 +60,12 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
-                            <Setter Value="{DynamicResource ButtonSelectBrush}" TargetName="Thumb" Property="Background" />
+                            <Setter TargetName="Thumb" Property="Background" 
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseOverBackground)}"/>
                         </Trigger>
                         <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
-                            <Setter Value="{DynamicResource DarkBrush}" TargetName="Thumb" Property="Background" />
+                            <Setter TargetName="Thumb" Property="Background"
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseDownBackground)}"/>
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">

@@ -10,14 +10,14 @@ namespace StreamlineMVVM
     // START INI_Class ------------------------------------------------------------------------------------------------------------------
     public class INIKeyValuePair
     {
-        public string Key = "";
-        public string Value = "";
+        public string Key { get; set; } = "";
+        public string Value { get; set; } = "";
     }
 
     public class INISection
     {
-        public string Name = "";
-        public INIKeyValuePair[] Section = new INIKeyValuePair[0];
+        public string Name { get; set; } = "";
+        public INIKeyValuePair[] Section { get; set; } = new INIKeyValuePair[0];
     }
 
     public static class INI
@@ -121,7 +121,7 @@ namespace StreamlineMVVM
             int currentIndex = -1;
             for (int i = 0; i < iniFile.Length; i++)
             {
-                string line = iniFile[i].Trim().ToLower();
+                string line = iniFile[i].Trim();
 
                 if (line.StartsWith("[") && line.EndsWith("]"))
                 {
@@ -181,12 +181,12 @@ namespace StreamlineMVVM
             };
 
             iniLocker.EnterWriteLock();
-            bool success = safeWrite(file, iniSectionList, create, backup);
+            bool success = safeWrite(file, iniSectionList, false, create, backup);
             iniLocker.ExitWriteLock();
             return success;
         }
 
-        public static bool MultiWrite(string file, INISection[] iniSectionList, bool create, bool backup)
+        public static bool MultiWrite(string file, INISection[] iniSectionList, bool overwrite, bool create, bool backup)
         {
             if (string.IsNullOrEmpty(file) || iniSectionList == null || iniSectionList.Length <= 0)
             {
@@ -194,19 +194,21 @@ namespace StreamlineMVVM
             }
 
             iniLocker.EnterWriteLock();
-            bool success = safeWrite(file, iniSectionList, create, backup);
+            bool success = safeWrite(file, iniSectionList, overwrite, create, backup);
             iniLocker.ExitWriteLock();
             return success;
         }
 
-        private static bool safeWrite(string file, INISection[] iniSectionList, bool create, bool backup)
+        private static bool safeWrite(string file, INISection[] iniSectionList, bool overwrite, bool create, bool backup)
         {
+            // File does not exists and the create paramater is false.
             if (File.Exists(file) == false && create == false)
             {
                 LogWriter.LogEntry("INI write failure. File does not exist: " + file);
                 return false;
             }
 
+            // File does not exists and the create paramater is true indicating we want to create a new file.
             if (File.Exists(file) == false && create)
             {
                 if (writeAllLines(file, convertSectionList(iniSectionList), backup))
@@ -217,9 +219,8 @@ namespace StreamlineMVVM
                 return false;
             }
 
-            // Converts the INISection[] to a List<INISection>.
-            List<INISection> fileINISectionList = safeReadFile(file).ToList();
-            if (fileINISectionList.Count <= 0) // If the file is empty, just write directly to it.
+            // We just want to overwrite the existing data.
+            if (overwrite)
             {
                 if (writeAllLines(file, convertSectionList(iniSectionList), backup))
                 {
@@ -229,8 +230,25 @@ namespace StreamlineMVVM
                 return false;
             }
 
+            // Below is if we want to just append the existing data in the file.
+            // Converts the INISection[] to a List<INISection> so we can append data as needed.
+            List<INISection> fileINISectionList = safeReadFile(file).ToList();
+
+            // If the file is empty, just write directly to it.
+            if (fileINISectionList.Count <= 0)
+            {
+                if (writeAllLines(file, convertSectionList(iniSectionList), backup))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            // Reads each INISection from the paramater so we can append what was read from the file.
             foreach (INISection iniSection in iniSectionList)
             {
+                // Searches file INISection list for a match to what we want to add. A match will result in appending the data.
                 int matchedFileINISectionIndex = fileINISectionList.FindIndex(s => s.Name.ToLower() == iniSection.Name.ToLower());
                 if (matchedFileINISectionIndex > -1) // Matching section found.
                 {
@@ -254,7 +272,6 @@ namespace StreamlineMVVM
         private static string convertSectionList(INISection[] iniSectionList)
         {
             string allText = "";
-
             INISection blankSection = new INISection();
 
             foreach (INISection iniSection in iniSectionList)
@@ -266,7 +283,7 @@ namespace StreamlineMVVM
                     continue;
                 }
 
-                allText = "[" + iniSection.Name + "]" + Environment.NewLine;
+                allText = allText + "[" + iniSection.Name + "]" + Environment.NewLine;
                 foreach (INIKeyValuePair iniKeyValuePair in iniSection.Section)
                 {
                     if (string.IsNullOrEmpty(iniKeyValuePair.Key))

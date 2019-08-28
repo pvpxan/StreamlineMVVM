@@ -53,21 +53,21 @@ namespace StreamlineMVVM
 
     public class WindowMessageColorSet
     {
-        public Brush Background = Brushes.White;
+        public Brush Background { get; set; } = Brushes.White;
 
-        public Brush ContentHeaderColor = Brushes.DarkBlue;
-        public Brush ContentBodyColor = Brushes.Black;
+        public Brush ContentHeaderColor { get; set; } = Brushes.DarkBlue;
+        public Brush ContentBodyColor { get; set; } = Brushes.Black;
 
-        public Brush HyperLinkColor = Brushes.Blue;
-        public Brush HyperLinkMouseOverColor = Brushes.Red;
-        public Brush HyperLinkMouseDisabledColor = Brushes.Gray;
+        public Brush HyperLinkColor { get; set; } = Brushes.Blue;
+        public Brush HyperLinkMouseOverColor { get; set; } = Brushes.Red;
+        public Brush HyperLinkMouseDisabledColor { get; set; } = Brushes.Gray;
     }
 
     public class CustomWindowsMessageButtons
     {
-        public string Custom1 = "";
-        public string Custom2 = "";
-        public string Custom3 = "";
+        public string Custom1 { get; set; } = "";
+        public string Custom2 { get; set; } = "";
+        public string Custom3 { get; set; } = "";
     }
 
     public class ControlContentRendered
@@ -90,41 +90,41 @@ namespace StreamlineMVVM
             }
         }
 
-        public Action OnContentRendered;
+        public Action OnContentRendered { get; set; }
     }
 
     public class DialogData
     {
-        public Window ParentWindow = null;
+        public Window ParentWindow { get; set; }
 
-        public string WindowTitle = "";
-        public Brush Background = Brushes.White;
-        public bool Topmost = true;
-        public WindowStyle DialogWindowStyle = WindowStyle.ToolWindow;
-        public WindowStartupLocation DialogStartupLocation = WindowStartupLocation.CenterOwner;
-        public string WindowIconURI = "";
+        public string WindowTitle { get; set; } = "";
+        public Brush Background { get; set; } = Brushes.White;
+        public bool Topmost { get; set; } = true;
+        public WindowStyle DialogWindowStyle { get; set; } = WindowStyle.ToolWindow;
+        public WindowStartupLocation DialogStartupLocation { get; set; } = WindowStartupLocation.CenterOwner;
+        public string WindowIconURI { get; set; } = "";
 
-        public bool RequireResult = false;
-        public bool CancelAsync = false;
+        public bool RequireResult { get; set; } = false;
+        public bool CancelAsync { get; set; } = false;
 
-        public Brush ContentHeaderColor = Brushes.DarkBlue;
-        public string ContentHeader = "";
+        public Brush ContentHeaderColor { get; set; } = Brushes.DarkBlue;
+        public string ContentHeader { get; set; } = "";
 
-        public Brush ContentBodyColor = Brushes.Black;
-        public string ContentBody = "";
+        public Brush ContentBodyColor { get; set; } = Brushes.Black;
+        public string ContentBody { get; set; } = "";
 
-        public Brush HyperLinkColor = Brushes.Blue;
-        public Brush HyperLinkMouseOverColor = Brushes.Red;
-        public Brush HyperLinkMouseDisabledColor = Brushes.Gray;
-        public string HyperLinkText = "";
-        public string HyperLinkUri = "";
+        public Brush HyperLinkColor { get; set; } = Brushes.Blue;
+        public Brush HyperLinkMouseOverColor { get; set; } = Brushes.Red;
+        public Brush HyperLinkMouseDisabledColor { get; set; } = Brushes.Gray;
+        public string HyperLinkText { get; set; } = "";
+        public string HyperLinkUri { get; set; } = "";
 
-        public WindowMessageIcon MessageIcon = WindowMessageIcon.Information;
-        public WindowMessageButtons MessageButtons = WindowMessageButtons.Ok;
-        public CustomWindowsMessageButtons CustomButtoms = new CustomWindowsMessageButtons();
+        public WindowMessageIcon MessageIcon { get; set; } = WindowMessageIcon.Information;
+        public WindowMessageButtons MessageButtons { get; set; } = WindowMessageButtons.Ok;
+        public CustomWindowsMessageButtons CustomButtoms { get; set; } = new CustomWindowsMessageButtons();
 
         // Program Specific Options
-        public object CustomData;
+        public object CustomData { get; set; }
     }
 
     public static class DialogService

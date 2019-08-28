@@ -30,19 +30,19 @@
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="ext:Extensions.CornerRadius" Value="0"/>
         <Setter Property="ext:Extensions.FocusThickness" Value="1"/>
-        <Setter Property="ext:Extensions.MouseOverBrush" Value="DodgerBlue"/>
-        <Setter Property="ext:Extensions.PressedBrush" Value="RoyalBlue"/>
+        <Setter Property="ext:Extensions.MouseOverBackground" Value="DodgerBlue"/>
+        <Setter Property="ext:Extensions.MouseDownBackground" Value="RoyalBlue"/>
 
-        <!-- Template for button style -->
+        <!-- Template for Button style -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <!-- Content handles within a border -->
                     <Border x:Name="buttonBorder" Margin="0"
-                                CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.CornerRadius)}"
-                                BorderThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=BorderThickness}"
-                                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=BorderBrush}"
-                                Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Background}">
+                            CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.CornerRadius)}"
+                            BorderThickness="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=BorderThickness}"
+                            BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=BorderBrush}"
+                            Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Background}">
                         <!-- ContentPresenter properties. Set the content source as the content from each control define below -->
                         <Grid Margin="1,1,1,1">
                             <Border x:Name="contentBorder" BorderThickness="0" BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=BorderBrush}">
@@ -54,12 +54,12 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="buttonBorder" Property="Background"
-                                        Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseOverBrush)}"/>
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseOverBackground)}"/>
                         </Trigger>
 
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="buttonBorder" Property="Background"
-                                        Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.PressedBrush)}"/>
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseDownBackground)}"/>
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="False">
@@ -81,3 +81,4 @@
     <!-- END Custom Button -->
 
 </ResourceDictionary>
+    

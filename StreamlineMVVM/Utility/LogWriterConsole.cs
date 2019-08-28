@@ -15,7 +15,7 @@ namespace StreamlineMVVM
         private static ReaderWriterLockSlim logLocker = new ReaderWriterLockSlim();
 
         // Since this class spins up threads, there is a possiblity that a console app can close before a thread finishes.
-        public static ConcurrentQueue<string> LogQueue = new ConcurrentQueue<string>();
+        public static ConcurrentQueue<string> LogQueue { get; private set; } = new ConcurrentQueue<string>();
 
         private static string logApplication = "";
         private static string logPath = "";
