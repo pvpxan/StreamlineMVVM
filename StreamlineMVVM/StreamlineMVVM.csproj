@@ -59,8 +59,11 @@
     <Compile Include="MVVM\DialogService.cs" />
     <Compile Include="MVVM\Extensions.cs" />
     <Compile Include="MVVM\MessageBoxEnhanced.cs" />
+    <Compile Include="MVVM\MessageBoxEnhancedWindow.cs" />
+    <Compile Include="MVVM\MessageBoxEnhancedViewModel.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="MVVM\FactoryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

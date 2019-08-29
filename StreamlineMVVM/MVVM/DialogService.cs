@@ -95,7 +95,10 @@ namespace StreamlineMVVM
 
     public class DialogData
     {
-        public Window ParentWindow { get; set; }
+        // These if present are used to determine what window this dialog should open under if model.
+        //public Window ParentWindow { get; set; } 
+        //public ViewModelBase ParentViewModelBase { get; set; }
+        // ------------------------
 
         public string WindowTitle { get; set; } = "";
         public Brush Background { get; set; } = Brushes.White;
@@ -141,7 +144,21 @@ namespace StreamlineMVVM
 
             Application.Current.ShutdownMode = shutdownMode;
             DialogBaseWindow dialogBaseWindow = new DialogBaseWindow(viewmodel.dialogData);
-            if (parentWindow != null)
+            if (parentWindow == null)
+            {
+                try
+                {
+                    dialogBaseWindow.Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
+                }
+                catch
+                {
+                    if (Application.Current.Windows.Count > 0)
+                    {
+                        dialogBaseWindow.Owner = Application.Current.Windows[0];
+                    }
+                }
+            }
+            else
             {
                 dialogBaseWindow.Owner = parentWindow;
             }
@@ -184,6 +201,20 @@ namespace StreamlineMVVM
         {
             DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
             return OpenDialog(viewmodel, parentWindow, shutdownMode);
+        }
+
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, ViewModelBase viewModelBase)
+        {
+            DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
+            return OpenDialog(viewmodel, FactoryService.GetWindowReference(viewModelBase), ShutdownMode.OnLastWindowClose);
+        }
+
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, ViewModelBase viewModelBase, ShutdownMode shutdownMode)
+        {
+            DialogBaseWindowViewModel viewmodel = new WindowsMessageViewModel(data);
+            return OpenDialog(viewmodel, FactoryService.GetWindowReference(viewModelBase), shutdownMode);
         }
     }
 }
