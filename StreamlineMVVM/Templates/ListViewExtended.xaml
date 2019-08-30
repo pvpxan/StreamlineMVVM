@@ -3,15 +3,15 @@
                     xmlns:ext="clr-namespace:StreamlineMVVM">
 
     <!-- START ListView Default Colors -->
-    <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF"/>
-    <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3"/>
-    <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF"/>
-    <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9"/>
+    <SolidColorBrush x:Key="Item.Static.Background" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Item.Static.Border" Color="#FFABADB3"/>
+    <SolidColorBrush x:Key="Item.Disabled.Background" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="Item.Disabled.Border" Color="#FFD9D9D9"/>
     <!-- END ListView Default Colors -->
 
     <Style x:Key="ListViewExtendedStyle" TargetType="{x:Type ListView}">
-        <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource ListBox.Static.Border}"/>
+        <Setter Property="Background" Value="{StaticResource Item.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Item.Static.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
@@ -30,8 +30,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Border}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.Disabled.Border}"/>
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
@@ -44,12 +44,12 @@
 
 
     <!-- START ListViewItem Default Colors -->
-    <SolidColorBrush x:Key="ListViewItem.MouseOver.Background" Color="#1F26A0DA"/>
-    <SolidColorBrush x:Key="ListViewItem.MouseOver.Border" Color="#a826A0Da"/>
-    <SolidColorBrush x:Key="ListViewItem.SelectedInactive.Background" Color="#3DDADADA"/>
-    <SolidColorBrush x:Key="ListViewItem.SelectedInactive.Border" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="ListViewItem.SelectedActive.Background" Color="#3D26A0DA"/>
-    <SolidColorBrush x:Key="ListViewItem.SelectedActive.Border" Color="#FF26A0DA"/>
+    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+    <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+    <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
+    <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
+    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
+    <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
     <!-- END ListViewItem Default Colors -->
 
     <Style x:Key="FocusVisual">
@@ -70,26 +70,30 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="ext:Extensions.SelectionInactiveBackground" Value="{StaticResource ListViewItem.SelectedInactive.Background}"/>
-        <Setter Property="ext:Extensions.SelectionInactiveBorder" Value="{StaticResource ListViewItem.SelectedInactive.Border}"/>
-        <Setter Property="ext:Extensions.SelectionActiveBackground" Value="{StaticResource ListViewItem.SelectedActive.Background}"/>
-        <Setter Property="ext:Extensions.SelectionActiveBorder" Value="{StaticResource ListViewItem.SelectedActive.Border}"/>
-        <Setter Property="ext:Extensions.MouseOverBackground" Value="{StaticResource ListViewItem.MouseOver.Background}"/>
-        <Setter Property="ext:Extensions.MouseOverBorder" Value="{StaticResource ListViewItem.MouseOver.Border}"/>
+        <Setter Property="ext:Extensions.SelectionInactiveBackground" Value="{StaticResource Item.SelectedInactive.Background}"/>
+        <Setter Property="ext:Extensions.SelectionInactiveBorder" Value="{StaticResource Item.SelectedInactive.Border}"/>
+        <Setter Property="ext:Extensions.SelectionActiveBackground" Value="{StaticResource Item.SelectedActive.Background}"/>
+        <Setter Property="ext:Extensions.SelectionActiveBorder" Value="{StaticResource Item.SelectedActive.Border}"/>
+        <Setter Property="ext:Extensions.MouseOverBackground" Value="{StaticResource Item.MouseOver.Background}"/>
+        <Setter Property="ext:Extensions.MouseOverBorder" Value="{StaticResource Item.MouseOver.Border}"/>
         <Setter Property="ext:Extensions.CommandParameter" Value="{x:Null}"/>
         <Setter Property="ext:Extensions.Command" Value="{x:Null}"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                     <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
+                        <Grid>
+                            <GridViewRowPresenter x:Name="gridrowPresenter" Content="{TemplateBinding Property=ContentControl.Content}" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding Property=ContentControl.Content}" Visibility="Collapsed" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
                         <!-- Bind the double click to a command in the parent view model -->
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" 
-                                  CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListViewItem}, Path=ext:Extensions.CommandParameter}"
-                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListViewItem}, Path=ext:Extensions.Command}"/>
+                                  CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListViewItem}, Path=(ext:Extensions.CommandParameter)}"
+                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListViewItem}, Path=(ext:Extensions.Command)}"/>
                         </Border.InputBindings>
                     </Border>
                     <ControlTemplate.Triggers>
