@@ -114,6 +114,12 @@ namespace StreamlineMVVM
             {
                 dialog.DialogResult = true;
             }
+
+            // Cleans up bitmapimage of icon.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 }

@@ -135,15 +135,35 @@ namespace StreamlineMVVM
         // Takes a ViewModel based user control and opens a window with that control as content. Provides the ability to set Application object ShutdownMode.
         public static WindowMessageResult OpenDialog(DialogBaseWindowViewModel viewmodel, Window parentWindow, ShutdownMode shutdownMode)
         {
-            // This is used to prevent the Application.Current from going null. It can be turned off by setting ApplicationExplicitShutdown.
-            // If this returns in this manner, you did something wrong and used this libary in correctly.
+            WindowMessageResult result = WindowMessageResult.Undefined;
+
+            // If this returns in this manner, you did something wrong and used this libary incorrectly.
             if (Application.Current == null)
             {
-                return WindowMessageResult.Undefined;
+                return result;
             }
 
-            Application.Current.ShutdownMode = shutdownMode;
+            try
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    getDialogResult(viewmodel, parentWindow, shutdownMode);
+                });
+            }
+            catch
+            {
+                // TODO (DB): This probably does not need to have anything here.
+            }
+
+            return result;
+        }
+
+        private static WindowMessageResult getDialogResult(DialogBaseWindowViewModel viewmodel, Window parentWindow, ShutdownMode shutdownMode)
+        {
             DialogBaseWindow dialogBaseWindow = new DialogBaseWindow(viewmodel.dialogData);
+
+            // Param shutdownMode can used to prevent the Application.Current from going null. It can be turned off by setting ApplicationExplicitShutdown.
+            Application.Current.ShutdownMode = shutdownMode;
             if (parentWindow == null)
             {
                 try
@@ -166,21 +186,7 @@ namespace StreamlineMVVM
             dialogBaseWindow.DataContext = viewmodel;
             dialogBaseWindow.ShowDialog();
 
-            WindowMessageResult result = WindowMessageResult.Undefined;
-            try
-            {
-                // This will allow for use of this method from threads outside the UI thread.
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    result = (dialogBaseWindow.DataContext as DialogBaseWindowViewModel).UserDialogResult;
-                });
-            }
-            catch
-            {
-                // TODO (DB): This probably does not need to have anything here.
-            }
-
-            return result;
+            return (dialogBaseWindow.DataContext as DialogBaseWindowViewModel).UserDialogResult;
         }
 
         // Same as above but also provides but with a default Application object ShutdownMode set to ShutdownMode.OnLastWindowClose.

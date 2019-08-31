@@ -667,9 +667,22 @@ namespace StreamlineMVVM
 
         private BitmapSource GetIcon(WindowMessageIcon icontype)
         {
-            Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+            BitmapSource bitmapSource = null;
 
-            return Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            try
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+                    bitmapSource = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                });
+            }
+            catch
+            {
+                // TODO (DB): This probably does not need to have anything here.
+            }
+
+            return bitmapSource;
         }
         // ---------------------------------------------------------------------------------------------------------------------------------------------
     }
