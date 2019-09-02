@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StreamlineMVVM"
              mc:Ignorable="d" 
-             d:DesignHeight="165" d:DesignWidth="585" Height="Auto" Width="585" Background="{Binding Background}">
+             d:DesignHeight="165" d:DesignWidth="585" Height="Auto" Width="585">
 
 <!--
 This control is referenced in DialogBaseWindow.xaml:

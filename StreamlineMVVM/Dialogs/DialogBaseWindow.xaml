@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Height="140" Width="400"
         ResizeMode="NoResize" SizeToContent="WidthAndHeight"
-        BorderThickness="1" BorderBrush="#FF007ACC" Background="Black"
+        BorderThickness="1" BorderBrush="#FF007ACC" Background="#FF1E1E1E"
         TabIndex="0"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
@@ -24,8 +24,8 @@
 When adding a custom dialog control that uses this window, add below to a merged dictionary in App.xaml
     
     <ResourceDictionary>
-        <DataTemplate DataType="{x:Type local:CustomControlViewModel}">
-            <local:CustomControl/>
+        <DataTemplate DataType="{x:Type local:MiscControlViewModel}">
+            <local:MiscControl/>
         </DataTemplate>
     </ResourceDictionary>
 -->

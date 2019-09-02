@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ext="clr-namespace:StreamlineMVVM">
 
-    <!-- START Custom CheckBox Template -->
-    <Style TargetType="{x:Type CheckBox}" x:Key="CustomCheckBox">
+    <!-- START Misc CheckBox Template -->
+    <Style TargetType="{x:Type CheckBox}" x:Key="MiscCheckBox">
         <Setter Property="SnapsToDevicePixels"
                     Value="true" />
         <Setter Property="OverridesDefaultStyle"
@@ -140,6 +140,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- END Custom CheckBox Template -->
+    <!-- END Misc CheckBox Template -->
 
 </ResourceDictionary>

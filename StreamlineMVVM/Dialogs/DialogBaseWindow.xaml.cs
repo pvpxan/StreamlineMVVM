@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -51,6 +52,8 @@ namespace StreamlineMVVM
                 WindowStyle = dialogData.DialogWindowStyle;
                 Topmost = dialogData.Topmost;
                 Title = dialogData.WindowTitle;
+                Background = dialogData.Background;
+
                 Loaded += contentLoaded;
             }
             catch (Exception Ex)
@@ -61,11 +64,43 @@ namespace StreamlineMVVM
 
         private void contentLoaded(object sender, RoutedEventArgs e)
         {
+            // This can only be done when the window loads.
             dialogBaseWindowViewModel = DataContext as DialogBaseWindowViewModel;
             dialogBaseWindowViewModel.DialogWindow = this;
+            dialogBaseWindowViewModel.DialogCloseRequest += closeWithResult;
 
             ContentRendered += contentRendered;
             Closing += onWindowClosing;
+        }
+
+        private void closeWithResult()
+        {
+            // HACK: There might be occations and I do not know how, but the window no longer is considered modal or what not.
+            bool isThisModal = false;
+            try
+            {
+                isThisModal = (bool)typeof(Window).GetField("_showingAsDialog", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(this);
+            }
+            catch
+            {
+
+            }
+
+            if (isThisModal)
+            {
+                try
+                {
+                    DialogResult = true;
+                }
+                catch
+                {
+                    this.Close();
+                }
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
         private void contentRendered(object sender, EventArgs e)
@@ -75,13 +110,18 @@ namespace StreamlineMVVM
 
         private void onWindowClosing(object sender, CancelEventArgs e)
         {
-            if (dialogBaseWindowViewModel.RequireResult)
+            if (dialogBaseWindowViewModel.RequireResult &&
+                dialogBaseWindowViewModel.UserDialogResult == WindowMessageResult.Undefined)
             {
-                if (dialogBaseWindowViewModel.UserDialogResult == WindowMessageResult.Undefined)
-                {
-                    e.Cancel = true;
-                }
+                e.Cancel = true;
+                return;
             }
+
+            // Cleans up bitmapimage of icon.
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
     }
 
@@ -94,7 +134,8 @@ namespace StreamlineMVVM
 
         public WindowMessageResult UserDialogResult = WindowMessageResult.Undefined;
 
-        public Window DialogWindow = null;
+        // This window object sort of pushes the bounds of MVVM and likely never needed.
+        public Window DialogWindow { get; set; }
         public ControlContentRendered WindowRenderedEvent = new ControlContentRendered();
 
         public DialogBaseWindowViewModel(DialogData data)
@@ -105,21 +146,37 @@ namespace StreamlineMVVM
             CancelAsync = data.CancelAsync;
         }
 
-        public void CloseDialogWithResult(Window dialog, WindowMessageResult result)
+        public void CloseDialogWithResult(WindowMessageResult result)
         {
             CancelAsync = true; // If method uses this to control running of async threads, this will force it to close when the window closes.
-
             UserDialogResult = result;
-            if (dialog != null)
-            {
-                dialog.DialogResult = true;
-            }
+            CloseWindow();
 
-            // Cleans up bitmapimage of icon.
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            // Swapped to event driven system.
+            //if (DialogWindow != null)
+            //{
+            //    DialogWindow.DialogResult = true;
+            //}
         }
+
+        // Handles Window closing.
+        public void CloseWindow()
+        {
+            if (DialogCloseRequest != null)
+            {
+                if (Application.Current != null)
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        DialogCloseRequest();
+                    });
+                }
+                else
+                {
+                    DialogCloseRequest();
+                }
+            }
+        }
+        public Action DialogCloseRequest { get; set; }
     }
 }

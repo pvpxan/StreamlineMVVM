@@ -19,9 +19,9 @@ namespace StreamlineMVVM
         Accept,
         Decline,
         Error,
-        Custom1,
-        Custom2,
-        Custom3,
+        Misc1,
+        Misc2,
+        Misc3,
     }
 
     public enum WindowMessageButtons
@@ -34,7 +34,7 @@ namespace StreamlineMVVM
         Exit,
         ContinueCancel,
         AcceptDecline,
-        Custom,
+        Misc,
     }
 
     public enum WindowMessageIcon
@@ -51,23 +51,57 @@ namespace StreamlineMVVM
         WinLogo
     }
 
-    public class WindowMessageColorSet
+    // Makes it easier to change this for later.
+    public static class ColorSets
     {
-        public Brush Background { get; set; } = Brushes.White;
+        public static Brush Background { get; } = Brushes.White;
 
-        public Brush ContentHeaderColor { get; set; } = Brushes.DarkBlue;
-        public Brush ContentBodyColor { get; set; } = Brushes.Black;
+        public static Brush ContentHeaderColor { get; } = Brushes.DarkBlue;
+        public static Brush ContentBodyColor { get; } = Brushes.Black;
 
-        public Brush HyperLinkColor { get; set; } = Brushes.Blue;
-        public Brush HyperLinkMouseOverColor { get; set; } = Brushes.Red;
-        public Brush HyperLinkMouseDisabledColor { get; set; } = Brushes.Gray;
+        public static Brush HyperLinkColor { get; } = Brushes.Blue;
+        public static Brush HyperLinkMouseOverColor { get; } = Brushes.Red;
+        public static Brush HyperLinkMouseDisabledColor { get; } = Brushes.Gray;
+
+        // If your Hex string is not well formed, this will return black.
+        public static Brush HexConverter(string hexCode)
+        {
+            Brush brush = Brushes.Black;
+
+            if (string.IsNullOrEmpty(hexCode) || ValidateHexCode(hexCode) == false)
+            {
+                return brush;
+            }
+
+            var converter = new BrushConverter();
+            try
+            {
+                brush = (Brush)converter.ConvertFromString(hexCode);
+            }
+            catch
+            {
+                brush = Brushes.Black;
+            }
+
+            return brush;
+        }
+
+        public static bool ValidateHexCode(string hexCode)
+        {
+            if (string.IsNullOrEmpty(hexCode) || hexCode[0] != '#')
+            {
+                return false;
+            }
+
+            return int.TryParse(hexCode.Trim('#'), System.Globalization.NumberStyles.HexNumber, null, out int hexValue);
+        }
     }
 
-    public class CustomWindowsMessageButtons
+    public class MiscWindowsMessageButtons
     {
-        public string Custom1 { get; set; } = "";
-        public string Custom2 { get; set; } = "";
-        public string Custom3 { get; set; } = "";
+        public string Misc1 { get; set; } = "";
+        public string Misc2 { get; set; } = "";
+        public string Misc3 { get; set; } = "";
     }
 
     public class ControlContentRendered
@@ -96,12 +130,12 @@ namespace StreamlineMVVM
     public class DialogData
     {
         // These if present are used to determine what window this dialog should open under if model.
-        //public Window ParentWindow { get; set; } 
-        //public ViewModelBase ParentViewModelBase { get; set; }
+        public Window ParentWindow { get; set; } 
+        public ViewModelBase ParentViewModelBase { get; set; }
         // ------------------------
 
         public string WindowTitle { get; set; } = "";
-        public Brush Background { get; set; } = Brushes.White;
+        public Brush Background { get; set; } = ColorSets.Background;
         public bool Topmost { get; set; } = true;
         public WindowStyle DialogWindowStyle { get; set; } = WindowStyle.ToolWindow;
         public WindowStartupLocation DialogStartupLocation { get; set; } = WindowStartupLocation.CenterOwner;
@@ -110,24 +144,25 @@ namespace StreamlineMVVM
         public bool RequireResult { get; set; } = false;
         public bool CancelAsync { get; set; } = false;
 
-        public Brush ContentHeaderColor { get; set; } = Brushes.DarkBlue;
+        public Brush ContentHeaderColor { get; set; } = ColorSets.ContentHeaderColor;
         public string ContentHeader { get; set; } = "";
 
-        public Brush ContentBodyColor { get; set; } = Brushes.Black;
+        public Brush ContentBodyColor { get; set; } = ColorSets.ContentBodyColor;
         public string ContentBody { get; set; } = "";
 
-        public Brush HyperLinkColor { get; set; } = Brushes.Blue;
-        public Brush HyperLinkMouseOverColor { get; set; } = Brushes.Red;
-        public Brush HyperLinkMouseDisabledColor { get; set; } = Brushes.Gray;
+        public Brush HyperLinkColor { get; set; } = ColorSets.HyperLinkColor;
+        public Brush HyperLinkMouseOverColor { get; set; } = ColorSets.HyperLinkMouseOverColor;
+        public Brush HyperLinkMouseDisabledColor { get; set; } = ColorSets.HyperLinkMouseDisabledColor;
         public string HyperLinkText { get; set; } = "";
         public string HyperLinkUri { get; set; } = "";
 
         public WindowMessageIcon MessageIcon { get; set; } = WindowMessageIcon.Information;
         public WindowMessageButtons MessageButtons { get; set; } = WindowMessageButtons.Ok;
-        public CustomWindowsMessageButtons CustomButtoms { get; set; } = new CustomWindowsMessageButtons();
+        public MiscWindowsMessageButtons MiscButtoms { get; set; } = new MiscWindowsMessageButtons();
 
-        // Program Specific Options
-        public object CustomData { get; set; }
+        // Pass Args to Dialog
+        public object Parameter1 { get; set; }
+        public object Parameter2 { get; set; }
     }
 
     public static class DialogService
@@ -147,7 +182,7 @@ namespace StreamlineMVVM
             {
                 Application.Current.Dispatcher.Invoke((Action)delegate
                 {
-                    getDialogResult(viewmodel, parentWindow, shutdownMode);
+                    result = getDialogResult(viewmodel, parentWindow, shutdownMode);
                 });
             }
             catch

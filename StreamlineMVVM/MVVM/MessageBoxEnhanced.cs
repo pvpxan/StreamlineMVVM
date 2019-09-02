@@ -7,8 +7,22 @@ using System.Windows.Media;
 
 namespace StreamlineMVVM
 {
+    public class WindowMessageColorSet
+    {
+        public Brush Background { get; set; } = Brushes.White;
+
+        public Brush ContentHeaderColor { get; set; } = Brushes.DarkBlue;
+        public Brush ContentBodyColor { get; set; } = Brushes.Black;
+
+        public Brush HyperLinkColor { get; set; } = Brushes.Blue;
+        public Brush HyperLinkMouseOverColor { get; set; } = Brushes.Red;
+        public Brush HyperLinkMouseDisabledColor { get; set; } = Brushes.Gray;
+    }
+
     public static partial class MessageBoxEnhanced
     {
+        public static WindowMessageColorSet ColorSet { get; set; } = new WindowMessageColorSet(); // Plans for the future.
+
         // Takes the arguments from the overload methods to create a DialogData object. This is what is passed to the DialogService and used to open the MessageBox Enhanced window.
         private static DialogData dialogDataBuilder(
             string windowTitle = "",
@@ -33,43 +47,43 @@ namespace StreamlineMVVM
 
             if (windowMessageColorSet == null)
             {
-                data.Background = Brushes.White;
-                data.ContentHeaderColor = Brushes.DarkBlue;
-                data.ContentBodyColor = Brushes.Black;
-                data.HyperLinkColor = Brushes.Blue;
-                data.HyperLinkMouseOverColor = Brushes.Red;
-                data.HyperLinkMouseDisabledColor = Brushes.Gray;
+                data.Background = ColorSets.Background;
+                data.ContentHeaderColor = ColorSets.ContentHeaderColor;
+                data.ContentBodyColor = ColorSets.ContentBodyColor;
+                data.HyperLinkColor = ColorSets.HyperLinkColor;
+                data.HyperLinkMouseOverColor = ColorSets.HyperLinkMouseOverColor;
+                data.HyperLinkMouseDisabledColor = ColorSets.HyperLinkMouseDisabledColor;
             }
             else
             {
                 if (windowMessageColorSet.Background == null)
                 {
-                    data.Background = Brushes.White;
+                    data.Background = ColorSets.Background;
                 }
 
                 if (windowMessageColorSet.ContentHeaderColor == null)
                 {
-                    data.ContentHeaderColor = Brushes.DarkBlue;
+                    data.ContentHeaderColor = ColorSets.ContentHeaderColor;
                 }
 
                 if (windowMessageColorSet.ContentBodyColor == null)
                 {
-                    data.ContentBodyColor = Brushes.Black;
+                    data.ContentBodyColor = ColorSets.ContentBodyColor;
                 }
 
                 if (windowMessageColorSet.HyperLinkColor == null)
                 {
-                    data.HyperLinkColor = Brushes.Blue;
+                    data.HyperLinkColor = ColorSets.HyperLinkColor;
                 }
 
                 if (windowMessageColorSet.HyperLinkMouseOverColor == null)
                 {
-                    data.HyperLinkMouseOverColor = Brushes.Red;
+                    data.HyperLinkMouseOverColor = ColorSets.HyperLinkMouseOverColor;
                 }
 
                 if (windowMessageColorSet.HyperLinkMouseDisabledColor == null)
                 {
-                    data.HyperLinkMouseDisabledColor = Brushes.Gray;
+                    data.HyperLinkMouseDisabledColor = ColorSets.HyperLinkMouseDisabledColor;
                 }
             }
 

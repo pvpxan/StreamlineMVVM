@@ -25,6 +25,7 @@
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ScrollBarExtended.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

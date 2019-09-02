@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ext="clr-namespace:StreamlineMVVM">
 
-    <!-- START Custom Button -->
+    <!-- START Misc Button -->
     <!-- Add reference to xmlns:sys="clr-namespace:System;assembly=mscorlib" in the Window/Control/Page -->
     <!-- Example
         <Button x:Name="dialog_button" Margin="10,10,0,0" Height="30" Width="80"
@@ -14,7 +14,7 @@
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 TabIndex="0"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                Command="{Binding Custom}">
+                Command="{Binding Misc}">
             <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="26"
                    Margin="0,-2,0,0" Padding="0,0,0,2"
                    Foreground="White" Content="Dialog"/>
@@ -24,14 +24,14 @@
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Background" Value="SteelBlue"/>
+        <Setter Property="Background" Value="#FF0E2A3E"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="ext:Extensions.CornerRadius" Value="0"/>
         <Setter Property="ext:Extensions.FocusThickness" Value="1"/>
-        <Setter Property="ext:Extensions.MouseOverBackground" Value="DodgerBlue"/>
-        <Setter Property="ext:Extensions.MouseDownBackground" Value="RoyalBlue"/>
+        <Setter Property="ext:Extensions.MouseOverBackground" Value="#FF054575"/>
+        <Setter Property="ext:Extensions.MouseDownBackground" Value="#FF070C16"/>
 
         <!-- Template for Button style -->
         <Setter Property="Template">
@@ -63,7 +63,7 @@
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="buttonBorder" Property="Background" Value="LightGray"/>
+                            <Setter TargetName="buttonBorder" Property="Background" Value="#FF83B1EC"/>
                             <Setter TargetName="buttonBorder" Property="TextElement.Foreground" Value="Black"/>
                         </Trigger>
 
@@ -78,7 +78,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <!-- END Custom Button -->
+    <!-- END Misc Button -->
 
 </ResourceDictionary>
     

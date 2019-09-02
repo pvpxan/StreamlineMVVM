@@ -54,23 +54,209 @@ namespace StreamlineMVVM
         // TODO (DB): There might be some functionality added that requires this section.
         // ---------------------------------------------------------------------------------------------------------------------------------------------
 
-        // Bound Variables
+        // Constructor
         // ---------------------------------------------------------------------------------------------------------------------------------------------
-        // -----------------------------------------------------
-        private System.Windows.Media.Brush _Background = System.Windows.Media.Brushes.White;
-        public System.Windows.Media.Brush Background
+        public WindowsMessageViewModel(DialogData data) : base(data)
         {
-            get
+            MessageIcon = GetIcon(data.MessageIcon);
+            ContentHeader = data.ContentHeader;
+
+            if (data.ContentBody.Length > 0)
             {
-                return _Background;
+                ContentBodyVisibility = Visibility.Visible;
+                ContentBody = data.ContentBody;
             }
-            set
+
+            if (data.HyperLinkUri.Length > 0)
             {
-                _Background = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Background"));
+                HyperLinkIsEnabled = true;
+                HyperLinkVisibility = Visibility.Visible;
+
+                HyperLinkUri = data.HyperLinkUri;
+
+                if (data.HyperLinkText.Length > 0)
+                {
+                    HyperLinkText = data.HyperLinkText;
+                }
+                else
+                {
+                    HyperLinkText = data.HyperLinkUri;
+                }
+            }
+
+            Loaded = new RelayCommand(loadedCommand);
+            Rendered = new RelayCommand(renderedCommand);
+
+            // Subscribes to the Rendered Event of the DialogBaseWindow that sets this control as its datacontext.
+            WindowRenderedEvent.OnContentRendered += delegate { renderedCommand(DialogWindow); };
+
+            switch (data.MessageButtons)
+            {
+                case WindowMessageButtons.Default:
+
+                    break;
+
+                case WindowMessageButtons.Ok:
+
+                    CenterContent = "Ok";
+                    CenterIsEnabled = true;
+                    CenterVisibility = Visibility.Visible;
+
+                    CenterButton = new RelayCommand(okCommand);
+
+                    break;
+
+                case WindowMessageButtons.OkCancel:
+
+                    LeftContent = "Ok";
+                    LeftIsEnabled = true;
+                    LeftVisibility = Visibility.Visible;
+
+                    LeftButton = new RelayCommand(okCommand);
+
+                    RightContent = "Cancel";
+                    RightIsEnabled = true;
+                    RightVisibility = Visibility.Visible;
+
+                    RightButton = new RelayCommand(cancelCommand);
+
+                    break;
+
+                case WindowMessageButtons.YesNo:
+
+                    LeftContent = "Yes";
+                    LeftIsEnabled = true;
+                    LeftVisibility = Visibility.Visible;
+
+                    LeftButton = new RelayCommand(yesCommand);
+
+                    RightContent = "No";
+                    RightIsEnabled = true;
+                    RightVisibility = Visibility.Visible;
+
+                    RightButton = new RelayCommand(noCommand);
+
+                    break;
+
+                case WindowMessageButtons.YesNoCancel:
+
+                    LeftContent = "Yes";
+                    LeftIsEnabled = true;
+                    LeftVisibility = Visibility.Visible;
+
+                    LeftButton = new RelayCommand(yesCommand);
+
+                    CenterContent = "No";
+                    CenterIsEnabled = true;
+                    CenterVisibility = Visibility.Visible;
+
+                    CenterButton = new RelayCommand(noCommand);
+
+                    RightContent = "Cancel";
+                    RightIsEnabled = true;
+                    RightVisibility = Visibility.Visible;
+
+                    RightButton = new RelayCommand(cancelCommand);
+
+                    break;
+
+                case WindowMessageButtons.Exit:
+
+                    CenterContent = "Exit";
+                    CenterIsEnabled = true;
+                    CenterVisibility = Visibility.Visible;
+
+                    CenterButton = new RelayCommand(exitCommand);
+
+                    break;
+
+                case WindowMessageButtons.ContinueCancel:
+
+                    LeftContent = "Continue";
+                    LeftIsEnabled = true;
+                    LeftVisibility = Visibility.Visible;
+
+                    LeftButton = new RelayCommand(continueCommand);
+
+                    RightContent = "Cancel";
+                    RightIsEnabled = true;
+                    RightVisibility = Visibility.Visible;
+
+                    RightButton = new RelayCommand(cancelCommand);
+
+                    break;
+
+                case WindowMessageButtons.AcceptDecline:
+
+                    LeftContent = "Accept";
+                    LeftIsEnabled = true;
+                    LeftVisibility = Visibility.Visible;
+
+                    LeftButton = new RelayCommand(acceptCommand);
+
+                    RightContent = "Decline";
+                    RightIsEnabled = true;
+                    RightVisibility = Visibility.Visible;
+
+                    RightButton = new RelayCommand(declineCommand);
+
+                    break;
+
+                case WindowMessageButtons.Misc:
+
+                    if (data.MiscButtoms.Misc1.Length > 0)
+                    {
+                        LeftContent = data.MiscButtoms.Misc1;
+                        LeftIsEnabled = true;
+                        LeftVisibility = Visibility.Visible;
+
+                        LeftButton = new RelayCommand(misc1Command);
+                    }
+
+                    if (data.MiscButtoms.Misc2.Length > 0)
+                    {
+                        CenterContent = data.MiscButtoms.Misc2;
+                        CenterIsEnabled = true;
+                        CenterVisibility = Visibility.Visible;
+
+                        CenterButton = new RelayCommand(custom2Command);
+                    }
+
+                    if (data.MiscButtoms.Misc3.Length > 0)
+                    {
+                        RightContent = data.MiscButtoms.Misc3;
+                        RightIsEnabled = true;
+                        RightVisibility = Visibility.Visible;
+
+                        RightButton = new RelayCommand(custom3Command);
+                    }
+
+                    break;
             }
         }
 
+        private BitmapSource GetIcon(WindowMessageIcon icontype)
+        {
+            BitmapSource bitmapSource = null;
+
+            try
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
+                    Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+                    bitmapSource = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                });
+            }
+            catch
+            {
+                // TODO (DB): This probably does not need to have anything here.
+            }
+
+            return bitmapSource;
+        }
+
+        // Bound Variables
+        // ---------------------------------------------------------------------------------------------------------------------------------------------
         // -----------------------------------------------------
         private BitmapSource _MessageIcon;
         public BitmapSource MessageIcon
@@ -429,261 +615,57 @@ namespace StreamlineMVVM
         // ------------------------------------------------------
         private void okCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Ok);
+            CloseDialogWithResult(WindowMessageResult.Ok);
         }
 
         private void cancelCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Cancel);
+            CloseDialogWithResult(WindowMessageResult.Cancel);
         }
 
         private void yesCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Yes);
+            CloseDialogWithResult(WindowMessageResult.Yes);
         }
 
         private void noCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.No);
+            CloseDialogWithResult(WindowMessageResult.No);
         }
 
         private void exitCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Exit);
+            CloseDialogWithResult(WindowMessageResult.Exit);
         }
 
         private void continueCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Continue);
+            CloseDialogWithResult(WindowMessageResult.Continue);
         }
 
         private void acceptCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Accept);
+            CloseDialogWithResult(WindowMessageResult.Accept);
         }
 
         private void declineCommand(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Decline);
+            CloseDialogWithResult(WindowMessageResult.Decline);
         }
 
-        private void custom1Command(object parameter)
+        private void misc1Command(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Custom1);
+            CloseDialogWithResult(WindowMessageResult.Misc1);
         }
 
         private void custom2Command(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Custom2);
+            CloseDialogWithResult(WindowMessageResult.Misc2);
         }
 
         private void custom3Command(object parameter)
         {
-            CloseDialogWithResult(parameter as Window, WindowMessageResult.Custom3);
+            CloseDialogWithResult(WindowMessageResult.Misc3);
         }
-        // ---------------------------------------------------------------------------------------------------------------------------------------------
-
-        // Constructor
-        // ---------------------------------------------------------------------------------------------------------------------------------------------
-        public WindowsMessageViewModel(DialogData data) : base(data)
-        {
-            Background = data.Background;
-            MessageIcon = GetIcon(data.MessageIcon);
-            ContentHeader = data.ContentHeader;
-
-            if (data.ContentBody.Length > 0)
-            {
-                ContentBodyVisibility = Visibility.Visible;
-                ContentBody = data.ContentBody;
-            }
-
-            if (data.HyperLinkUri.Length > 0)
-            {
-                HyperLinkIsEnabled = true;
-                HyperLinkVisibility = Visibility.Visible;
-
-                HyperLinkUri = data.HyperLinkUri;
-
-                if (data.HyperLinkText.Length > 0)
-                {
-                    HyperLinkText = data.HyperLinkText;
-                }
-                else
-                {
-                    HyperLinkText = data.HyperLinkUri;
-                }
-            }
-
-            Loaded = new RelayCommand(loadedCommand);
-            Rendered = new RelayCommand(renderedCommand);
-
-            // Subscribes to the Rendered Event of the DialogBaseWindow that sets this control as its datacontext.
-            WindowRenderedEvent.OnContentRendered += delegate { renderedCommand(DialogWindow); };
-
-            switch (data.MessageButtons)
-            {
-                case WindowMessageButtons.Default:
-
-                    break;
-
-                case WindowMessageButtons.Ok:
-
-                    CenterContent = "Ok";
-                    CenterIsEnabled = true;
-                    CenterVisibility = Visibility.Visible;
-
-                    CenterButton = new RelayCommand(okCommand);
-
-                    break;
-
-                case WindowMessageButtons.OkCancel:
-
-                    LeftContent = "Ok";
-                    LeftIsEnabled = true;
-                    LeftVisibility = Visibility.Visible;
-
-                    LeftButton = new RelayCommand(okCommand);
-
-                    RightContent = "Cancel";
-                    RightIsEnabled = true;
-                    RightVisibility = Visibility.Visible;
-
-                    RightButton = new RelayCommand(cancelCommand);
-
-                    break;
-
-                case WindowMessageButtons.YesNo:
-
-                    LeftContent = "Yes";
-                    LeftIsEnabled = true;
-                    LeftVisibility = Visibility.Visible;
-
-                    LeftButton = new RelayCommand(yesCommand);
-
-                    RightContent = "No";
-                    RightIsEnabled = true;
-                    RightVisibility = Visibility.Visible;
-
-                    RightButton = new RelayCommand(noCommand);
-
-                    break;
-
-                case WindowMessageButtons.YesNoCancel:
-
-                    LeftContent = "Yes";
-                    LeftIsEnabled = true;
-                    LeftVisibility = Visibility.Visible;
-
-                    LeftButton = new RelayCommand(yesCommand);
-
-                    CenterContent = "No";
-                    CenterIsEnabled = true;
-                    CenterVisibility = Visibility.Visible;
-
-                    CenterButton = new RelayCommand(noCommand);
-
-                    RightContent = "Cancel";
-                    RightIsEnabled = true;
-                    RightVisibility = Visibility.Visible;
-
-                    RightButton = new RelayCommand(cancelCommand);
-
-                    break;
-
-                case WindowMessageButtons.Exit:
-
-                    CenterContent = "Exit";
-                    CenterIsEnabled = true;
-                    CenterVisibility = Visibility.Visible;
-
-                    CenterButton = new RelayCommand(exitCommand);
-
-                    break;
-
-                case WindowMessageButtons.ContinueCancel:
-
-                    LeftContent = "Continue";
-                    LeftIsEnabled = true;
-                    LeftVisibility = Visibility.Visible;
-
-                    LeftButton = new RelayCommand(continueCommand);
-
-                    RightContent = "Cancel";
-                    RightIsEnabled = true;
-                    RightVisibility = Visibility.Visible;
-
-                    RightButton = new RelayCommand(cancelCommand);
-
-                    break;
-
-                case WindowMessageButtons.AcceptDecline:
-
-                    LeftContent = "Accept";
-                    LeftIsEnabled = true;
-                    LeftVisibility = Visibility.Visible;
-
-                    LeftButton = new RelayCommand(acceptCommand);
-
-                    RightContent = "Decline";
-                    RightIsEnabled = true;
-                    RightVisibility = Visibility.Visible;
-
-                    RightButton = new RelayCommand(declineCommand);
-
-                    break;
-
-                case WindowMessageButtons.Custom:
-
-                    if (data.CustomButtoms.Custom1.Length > 0)
-                    {
-                        LeftContent = data.CustomButtoms.Custom1;
-                        LeftIsEnabled = true;
-                        LeftVisibility = Visibility.Visible;
-
-                        LeftButton = new RelayCommand(custom1Command);
-                    }
-
-                    if (data.CustomButtoms.Custom2.Length > 0)
-                    {
-                        CenterContent = data.CustomButtoms.Custom2;
-                        CenterIsEnabled = true;
-                        CenterVisibility = Visibility.Visible;
-
-                        CenterButton = new RelayCommand(custom2Command);
-                    }
-
-                    if (data.CustomButtoms.Custom3.Length > 0)
-                    {
-                        RightContent = data.CustomButtoms.Custom3;
-                        RightIsEnabled = true;
-                        RightVisibility = Visibility.Visible;
-
-                        RightButton = new RelayCommand(custom3Command);
-                    }
-
-                    break;
-            }
-        }
-
-        private BitmapSource GetIcon(WindowMessageIcon icontype)
-        {
-            BitmapSource bitmapSource = null;
-
-            try
-            {
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
-                    bitmapSource = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                });
-            }
-            catch
-            {
-                // TODO (DB): This probably does not need to have anything here.
-            }
-
-            return bitmapSource;
-        }
-        // ---------------------------------------------------------------------------------------------------------------------------------------------
     }
 }
