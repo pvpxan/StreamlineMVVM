@@ -90,7 +90,7 @@ namespace StreamlineMVVM
             }
         }
 
-        public static List<OutputResult> CopyDirectory(string sourceDirectory, string targetDirectory)
+        public static OutputResult[] CopyDirectory(string sourceDirectory, string targetDirectory)
         {
             List<OutputResult> output = new List<OutputResult>();
 
@@ -109,7 +109,7 @@ namespace StreamlineMVVM
                 LogWriter.Exception("Error processing Copy method.", Ex);
             }
 
-            return output;
+            return output.ToArray();
         }
 
         private static List<OutputResult> copyDirecoryWork(DirectoryInfo source, DirectoryInfo target)
