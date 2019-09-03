@@ -13,6 +13,7 @@
 * Add Application Resource:
   * `StreamlineMVVM.dll` is the output file.
   * `<ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/MergedResources.xaml"/>`
+  * `xmlns:ext="clr-namespace:MVVMFramework;assembly=MVVMFramework"`
 * Supports Embedding with this code: https://github.com/pvpxan/DLLEmbedding
 
 # Framework
@@ -24,7 +25,7 @@ See https://github.com/pvpxan/MVVMTemplate for example code of how to use this f
 Customizable replacement for the standard C# MessageBox with more options for buttons and dialog results.
 NOTE: 
 * Using this on application launch BEFORE you open another window will result in the Application class shutting down.
-* Set Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown; to get around this.
+* Set `Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;` to get around this.
 * Downside is you have to call an explicit shutdown or change the setting back.
 
 # Classes
@@ -58,5 +59,43 @@ Below are some utility classes used to wrap various methods capaable of throwing
   * `OutputResult[] CopyDirectory(string sourceDirectory, string targetDirectory)`
 * `RegexFunctions`
   * Lots of matching and replacing based on number, special characters, and spacing.
+* `FactoryService`
+  * Pretty new addition with tools to help create robust Window Factory classes.
+  
+# Extention Methods
+`ComboBoxHighlight`
+`CornerRadius`
+`FocusThickness`
+`MouseOverBackground`
+`MouseOverBorder`
+`MouseDownBackground`
+`MouseDownBorder`
+`SelectionActiveBackground`
+`SelectionActiveBorder`
+`SelectionInactiveBackground`
+`SelectionInactiveBorder`
+`CommandParameter`
+`Command`
+  
+# Styles/Templates
+Some of these are a semi work in progress, but all work well when you know how to use them.
+`pack://application:,,,/StreamlineMVVM;component/Templates/ButtonExtended.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/CheckBox.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/ScrollBarExtended.xaml`
+
+# DialogBaseWindow
+Generic Window with a bound content presenter.
+When adding a custom dialog control that uses this window, add below to a merged application dictionary.
+NOTE: If you are embedding this library, this XAML code must be loaded AFTER the DLL is loaded or things will not work.
+    
+`<ResourceDictionary>`
+    `<DataTemplate DataType="{x:Type local:YourViewModel}">`
+        `<local:YourControl/>`
+    `</DataTemplate>`
+`</ResourceDictionary>`
   
   
