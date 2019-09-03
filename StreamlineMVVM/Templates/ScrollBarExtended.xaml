@@ -61,11 +61,11 @@
                     <ControlTemplate.Triggers>
                         <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
                             <Setter TargetName="Thumb" Property="Background" 
-                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseOverBackground)}"/>
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollBar}, Path=(ext:Extensions.MouseOverBackground)}"/>
                         </Trigger>
                         <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
                             <Setter TargetName="Thumb" Property="Background"
-                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=(ext:Extensions.MouseDownBackground)}"/>
+                                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollBar}, Path=(ext:Extensions.MouseDownBackground)}"/>
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
