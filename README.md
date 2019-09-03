@@ -17,20 +17,19 @@
 * Supports Embedding with this code: https://github.com/pvpxan/DLLEmbedding
 
 # Framework
-See https://github.com/pvpxan/MVVMTemplate for example code of how to use this framework.
+* See https://github.com/pvpxan/MVVMTemplate for example code of how to use this framework.
 * Creation of a ViewModel should be done by extending your class with `ViewModelBase`.
 * The `RelayCommand` Class is used for tieing your business logic to a bound `ICommand`.
 
 # MessageBoxEnhanced
-Customizable replacement for the standard C# MessageBox with more options for buttons and dialog results.
-NOTE: 
-* Using this on application launch BEFORE you open another window will result in the Application class shutting down.
-* Set `Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;` to get around this.
-* Downside is you have to call an explicit shutdown or change the setting back.
+* Customizable replacement for the standard C# MessageBox with more options for buttons and dialog results.
+* __NOTE:__ 
+  * Using this on application launch BEFORE you open another window will result in the Application class shutting down.
+  * Set `Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;` to get around this.
+  * Downside is you have to call an explicit shutdown or change the setting back.
 
 # Classes
-The Logging classes are simple thread safe log writers with multiple options.
-* `LogWriter`
+* `LogWriter` - The Logging classes are simple thread safe log writers with multiple options.
   * `bool SetPath(string path, string user, string application)` (Needed to assign where you want the log files to go.)
   * `Exception(string log, Exception ex)`
   * `LogEntry(string log)`
@@ -40,18 +39,16 @@ The Logging classes are simple thread safe log writers with multiple options.
   * `ExceptionDisplay(string log, Exception ex, bool showFull)`
   * `ExceptionDisplay(string log, Exception ex, bool showFull, Window window)`
 
-The following classes to interface with INI files and `app.config` files in a thread safe manner.
-* `Config`
+* `Config` - Writes to `app.config`.
   * `string Read(string key)` Used for reading `app.config` file.
   * `bool Update(string key, string value)` Writes to `app.config` file.
-* `INI`
+* `INI` - Writes to INI files.
   * `bool? ReadBool(string file, string key)`
   * `int? ReadInt(string file, string key)`
   * `string Read(string file, string key)`
   * `bool Write(string file, string key, string value, bool create, bool backup)`
 
-Below are some utility classes used to wrap various methods capaable of throwing exceptions.
-* `SystemIO`
+* `SystemIO` - Simple IO wrapping.
   * `PathType GetPathType(string path)`
   * `bool Delete(string file)`
   * `bool Copy(string fileSource, string fileTarget, bool overwrite)`
@@ -63,39 +60,38 @@ Below are some utility classes used to wrap various methods capaable of throwing
   * Pretty new addition with tools to help create robust Window Factory classes.
   
 # Extention Methods
-`ComboBoxHighlight`
-`CornerRadius`
-`FocusThickness`
-`MouseOverBackground`
-`MouseOverBorder`
-`MouseDownBackground`
-`MouseDownBorder`
-`SelectionActiveBackground`
-`SelectionActiveBorder`
-`SelectionInactiveBackground`
-`SelectionInactiveBorder`
-`CommandParameter`
+`ComboBoxHighlight`\
+`CornerRadius`\
+`FocusThickness`\
+`MouseOverBackground`\
+`MouseOverBorder`\
+`MouseDownBackground`\
+`MouseDownBorder`\
+`SelectionActiveBackground`\
+`SelectionActiveBorder`\
+`SelectionInactiveBackground`\
+`SelectionInactiveBorder`\
+`CommandParameter`\
 `Command`
-  
+
 # Styles/Templates
-Some of these are a semi work in progress, but all work well when you know how to use them.
-`pack://application:,,,/StreamlineMVVM;component/Templates/ButtonExtended.xaml`
-`pack://application:,,,/StreamlineMVVM;component/Templates/CheckBox.xaml`
-`pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml`
-`pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml`
-`pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml`
-`pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml`
+* Some of these are a semi work in progress, but all work well when you know how to use them.
+`pack://application:,,,/StreamlineMVVM;component/Templates/ButtonExtended.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/CheckBox.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml`\
 `pack://application:,,,/StreamlineMVVM;component/Templates/ScrollBarExtended.xaml`
 
 # DialogBaseWindow
-Generic Window with a bound content presenter.
-When adding a custom dialog control that uses this window, add below to a merged application dictionary.
-NOTE: If you are embedding this library, this XAML code must be loaded AFTER the DLL is loaded or things will not work.
+* Generic Window with a bound content presenter.
+* When adding a custom dialog control that uses this window, add below to a merged application dictionary.
+* __NOTE:__
+  * If you are embedding this library, this XAML code must be loaded AFTER the DLL is loaded or things will not work.
     
-`<ResourceDictionary>`
-    `<DataTemplate DataType="{x:Type local:YourViewModel}">`
-        `<local:YourControl/>`
-    `</DataTemplate>`
+`<ResourceDictionary>`\
+    `<DataTemplate DataType="{x:Type local:YourViewModel}">`\
+        `<local:YourControl/>`\
+    `</DataTemplate>`\
 `</ResourceDictionary>`
-  
-  
