@@ -11,9 +11,8 @@
 # Injection
 * Add Reference: StreamlineMVVM.dll
 * Add Application Resource:
-  * `StreamlineMVVM.dll` is the output file.
   * `<ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/MergedResources.xaml"/>`
-  * `xmlns:ext="clr-namespace:MVVMFramework;assembly=MVVMFramework"`
+  * Add to XAML where resources are used:`xmlns:ext="clr-namespace:MVVMFramework;assembly=MVVMFramework"`
 * Supports Embedding with this code: https://github.com/pvpxan/DLLEmbedding
 
 # Framework
