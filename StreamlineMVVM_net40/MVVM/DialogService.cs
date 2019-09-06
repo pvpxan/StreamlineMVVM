@@ -78,8 +78,9 @@ namespace StreamlineMVVM
             {
                 brush = (Brush)converter.ConvertFromString(hexCode);
             }
-            catch
+            catch (Exception Ex)
             {
+                LogWriter.PostException("Error getting color from hex code converter.", Ex);
                 brush = Brushes.Black;
             }
 
@@ -185,8 +186,9 @@ namespace StreamlineMVVM
                     result = getDialogResult(viewmodel, parentWindow, shutdownMode);
                 });
             }
-            catch
+            catch (Exception Ex)
             {
+                LogWriter.PostException("Error errpr getting dialog result.", Ex);
                 // TODO (DB): This probably does not need to have anything here.
             }
 
@@ -205,8 +207,10 @@ namespace StreamlineMVVM
                 {
                     dialogBaseWindow.Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(x => x.IsActive);
                 }
-                catch
+                catch (Exception Ex)
                 {
+                    LogWriter.PostException("Error getting current window reference from application.", Ex);
+
                     if (Application.Current.Windows.Count > 0)
                     {
                         dialogBaseWindow.Owner = Application.Current.Windows[0];

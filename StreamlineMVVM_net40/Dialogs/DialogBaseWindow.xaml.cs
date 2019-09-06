@@ -42,8 +42,9 @@ namespace StreamlineMVVM
                         Icon = BitmapFrame.Create(new Uri(dialogData.WindowIconURI, UriKind.RelativeOrAbsolute));
                     }
                 }
-                catch
+                catch (Exception Ex)
                 {
+                    LogWriter.PostException("Error getting Caption Icon data.", Ex);
                     // TODO (DB):  Find a way to extract the application icon and assign it.
                 }
 
@@ -81,9 +82,9 @@ namespace StreamlineMVVM
             {
                 isThisModal = (bool)typeof(Window).GetField("_showingAsDialog", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(this);
             }
-            catch
+            catch (Exception Ex)
             {
-
+                LogWriter.PostException("Error reading Modal status of window.", Ex);
             }
 
             if (isThisModal)
@@ -92,8 +93,9 @@ namespace StreamlineMVVM
                 {
                     DialogResult = true;
                 }
-                catch
+                catch (Exception Ex)
                 {
+                    LogWriter.PostException("Error closing Modal window.", Ex);
                     this.Close();
                 }
             }

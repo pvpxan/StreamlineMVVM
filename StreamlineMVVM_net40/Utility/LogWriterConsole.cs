@@ -22,6 +22,19 @@ namespace StreamlineMVVM
         private static string logUser = "";
         private static string logFile = "";
 
+        public static bool StorePostData { get; set; } = false;
+        public static int MaxLogCount { get; set; } = 100;
+
+        // Can be used for internal storage of logs that you may want to post later.
+        private static List<string> _LogData = new List<string>();
+        public static List<string> LogData
+        {
+            get
+            {
+                return _LogData;
+            }
+        }
+
         public static bool SetPath(string path, string user, string application)
         {
             if (System.IO.Directory.Exists(path) == false)
@@ -47,8 +60,9 @@ namespace StreamlineMVVM
                 {
                     logPath = System.IO.Path.GetTempPath();
                 }
-                catch
+                catch (Exception Ex)
                 {
+                    LogWriter.PostException("Error getting system temporary directory path.", Ex);
                     return false;
                 }
             }
@@ -60,8 +74,9 @@ namespace StreamlineMVVM
             {
                 System.IO.Directory.CreateDirectory(logPath + @"\log"); // Generates the folder for the log files if non exists.
             }
-            catch
+            catch (Exception Ex)
             {
+                LogWriter.PostException("Error creating log file directory.", Ex);
                 return false;
             }
 
@@ -73,8 +88,9 @@ namespace StreamlineMVVM
                     System.IO.File.Create(logFile).Dispose(); // Generates a log file if non exists.
                     return true;
                 }
-                catch
+                catch (Exception Ex)
                 {
+                    LogWriter.PostException("Error blank log file.", Ex);
                     return false;
                 }
             }
@@ -104,37 +120,94 @@ namespace StreamlineMVVM
             // Creates a thread that will write to a log file.
             Task.Factory.StartNew(() =>
             {
-                logEntryThreadCall(log);
+                logEntryThreadCall(log, true);
             },
             token, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
         }
 
-        private static void logEntryThreadCall(string log)
+        // Log Exception storage without writing to disk.
+        // -----------------------------------------------------------------------
+        public static void PostException(string log, Exception ex)
+        {
+            string message = log + Environment.NewLine + Convert.ToString(ex);
+            Post(message);
+        }
+
+        // Log storage without writing to disk.
+        // -----------------------------------------------------------------------
+        public static void Post(string log)
+        {
+            if (StorePostData == false)
+            {
+                return;
+            }
+            
+            // TODO: These might be used for timeouts later. Needed at this time for proper task creation.
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+
+            LogQueue.Enqueue(log);
+
+            // Creates a thread that will write to a log file.
+            Task.Factory.StartNew(() =>
+            {
+                logEntryThreadCall(log, false);
+            },
+            token, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
+        }
+
+        private static void logEntryThreadCall(string log, bool write)
         {
             logLocker.EnterWriteLock();
 
-            if (generateLogFile())
+            string formatedLog = "Time Stamp Error - " + logUser + " - " + log + Environment.NewLine;
+            try
             {
-                try
+                formatedLog = DateTime.Now.ToString("yyyy-MM-dd - HH:mm:ss") + " - " + logUser + " - " + log + Environment.NewLine;
+            }
+            catch (Exception Ex)
+            {
+                LogWriter.PostException("Error formatting log entry.", Ex);
+            }
+
+            if (write)
+            {
+                saveLogToFile(formatedLog);
+            }
+            else
+            {
+                if (_LogData.Count >= MaxLogCount)
                 {
-                    System.IO.File.AppendAllText(logFile, (DateTime.Now.ToString("yyyy-MM-dd - HH:mm:ss") + " - " + logUser + " - " + log + Environment.NewLine));
+                    _LogData.RemoveAt(0);
                 }
-                catch
-                {
-                    // TODO (DB): Add a way to track errors writing to the log file.
-                }
+
+                _LogData.Add(formatedLog);
             }
 
             LogQueue.TryDequeue(out string loggedMessage);
             logLocker.ExitWriteLock();
         }
 
-        // TODO: More for this later.
-        // -----------------------------------------------------------------------
-        //public static void ErrorLog()
-        //{
+        // TODO (DB): Add LogData to a file.
+        public static void WriteLogData()
+        {
 
-        //}
+        }
+
+        private static void saveLogToFile(string logData)
+        {
+            if (generateLogFile())
+            {
+                try
+                {
+                    System.IO.File.AppendAllText(logFile, logData);
+                }
+                catch (Exception Ex)
+                {
+                    LogWriter.PostException("Error saving log entry to file on disk.", Ex);
+                }
+            }
+        }
     }
     // END LogWriter_Class --------------------------------------------------------------------------------------------------------------
 }

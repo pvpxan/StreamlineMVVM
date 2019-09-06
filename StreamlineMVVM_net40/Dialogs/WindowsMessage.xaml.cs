@@ -32,8 +32,9 @@ namespace StreamlineMVVM
             {
                 InitializeComponent();
             }
-            catch //(Exception Ex)
+            catch (Exception Ex)
             {
+                LogWriter.PostException("Error opening window message user control.", Ex);
                 // TODO (DB): Create some sort of error log in a default windows directory.
             }
         }
@@ -247,8 +248,9 @@ namespace StreamlineMVVM
                     bitmapSource = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
                 });
             }
-            catch
+            catch (Exception Ex)
             {
+                LogWriter.PostException("Error reading bitmap source from system icons.", Ex);
                 // TODO (DB): This probably does not need to have anything here.
             }
 
