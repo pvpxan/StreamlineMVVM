@@ -7,6 +7,9 @@
   * Minor System.IO wrapping
   * Specialized Regex Match/Replace
 * Also can add custom dialogs by creating a User Control and using that as the DataTemplate for window content.
+* Two versions available for compatibility with 2 different .net Framework distributions.
+  * .net Framework 4.0
+  * .net Framework 4.6.2
 
 # Injection
 * Add Reference: StreamlineMVVM.dll
