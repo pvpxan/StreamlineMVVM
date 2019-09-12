@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace StreamlineMVVM
 {
+    // .net 4.6.2 compatible
+
     // Wrapper class for TaskFactory wipped together to sort of simulate BackgroundWorker class but use the better Tasks technology.
     // Just mostly trying this out.
     public class TaskWorkerEventArgs
     {
         public object Parameters { get; set; }
+        public int ProgressPercentage { get; set; }
+        public object Progress { get; set; }
         public object Results { get; set; }
         public bool CancellationRequested { get; set; } = false;
         public bool Cancelled { get; set; } = false;
@@ -22,10 +26,12 @@ namespace StreamlineMVVM
     {
         private Task task = null;
         private CancellationTokenSource source = null;
-        private CancellationToken token;
+        private CancellationToken token = CancellationToken.None;
         private TaskWorkerEventArgs taskWorkerEventArgs = new TaskWorkerEventArgs();
+        private TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         public Action<object, TaskWorkerEventArgs> TaskAction { get; set; }
+        public Action<object, TaskWorkerEventArgs> TaskProgress { get; set; }
         public Action<object, TaskWorkerEventArgs> TaskComplete { get; set; }
 
         private readonly TimeSpan defaultTaskTimeout = TimeSpan.FromSeconds(0);
@@ -90,7 +96,7 @@ namespace StreamlineMVVM
 
         private async void runTask(object paramaters, TimeSpan taskTimeout)
         {
-            if (_IsBusy || TaskAction == null || TaskComplete == null)
+            if (_IsBusy || TaskAction == null)
             {
                 // This should probrably throw or something else.
                 return;
@@ -116,31 +122,91 @@ namespace StreamlineMVVM
                 task = Task.Run(() => TaskAction(this, taskWorkerEventArgs), token);
                 await task;
             }
-            finally
+            catch (Exception Ex)
             {
-                // Nothing really needs to be here.
+                LogWriter.Exception("TaskWorker Error: Failed to run worker task.", Ex);
             }
 
             taskComplete();
         }
 
+        // Calls for task cancellation.
         public void CancelTask()
         {
-            if (source != null)
+            // This should only be allowed if a task is actually running.
+            if (source == null)
             {
-                try
-                {
-                    source.Cancel();
-                }
-                finally
-                {
-                    // Nothing really needs to be here.
-                }
+                return;
+            }
+
+            try
+            {
+                source.Cancel();
+            }
+            catch (Exception Ex)
+            {
+                LogWriter.Exception("TaskWorker Error: Failed to update cancellation token.", Ex);
             }
 
             _CancellationRequested = true;
             taskWorkerEventArgs.Cancelled = true;
             taskComplete();
+        }
+
+        public void ReportProgressWait(object progress, int progressPercentage)
+        {
+            taskWorkerEventArgs.Progress = progress;
+            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
+
+            reportAsync(true);
+        }
+
+        public void ReportProgressWait()
+        {
+            reportAsync(true);
+        }
+
+        public void ReportProgressAsync(object progress, int progressPercentage)
+        {
+            taskWorkerEventArgs.Progress = progress;
+            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
+
+            reportAsync(false);
+        }
+
+        public void ReportProgressAsync()
+        {
+            reportAsync(false);
+        }
+
+        private void reportAsync(bool wait)
+        {
+            if (TaskProgress == null)
+            {
+                return;
+            }
+
+            Task reportTask = null;
+            try
+            {
+                reportTask = Task.Factory.StartNew(() => TaskProgress(this, taskWorkerEventArgs), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+                if (wait)
+                {
+                    reportTask.Wait();
+                }
+            }
+            catch (Exception Ex)
+            {
+                LogWriter.Exception("TaskWorker Error: Failed to run timeout task.", Ex);
+            }
+            finally
+            {
+                if (reportTask != null)
+                {
+                    reportTask.Dispose();
+                    reportTask = null;
+                }
+            }
         }
 
         // Completed event that runs on the initial task start calling thread.
@@ -153,7 +219,11 @@ namespace StreamlineMVVM
             }
             _IsBusy = false;
 
-            TaskComplete(this, taskWorkerEventArgs);
+            if (TaskComplete != null)
+            {
+                TaskComplete(this, taskWorkerEventArgs);
+            }
+
             Dispose();
         }
 
@@ -165,20 +235,22 @@ namespace StreamlineMVVM
                 if (task != null)
                 {
                     task.Dispose();
-                    task = null;
                 }
 
                 if (source != null)
                 {
                     source.Dispose();
-                    source = null;
                 }
             }
-            catch
+            catch (Exception Ex)
             {
                 // The above may fail is the task is somehow dead locked. Will look into this more.
+                LogWriter.Exception("TaskWorker Error: Failed to dispose TaskWorker resources.", Ex);
             }
 
+            task = null;
+            source = null;
+            token = CancellationToken.None;
             taskWorkerEventArgs = new TaskWorkerEventArgs();
         }
     }

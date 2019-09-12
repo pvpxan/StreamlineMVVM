@@ -7,24 +7,31 @@ using System.Threading.Tasks;
 
 namespace StreamlineMVVM
 {
+    // .net 4.0 compatible
+    
     // Wrapper class for TaskFactory wipped together to sort of simulate BackgroundWorker class but use the better Tasks technology.
     // Just mostly trying this out.
     public class TaskWorkerEventArgs
     {
         public object Parameters { get; set; }
+        public int ProgressPercentage { get; set; }
+        public object Progress { get; set; }
         public object Results { get; set; }
         public bool CancellationRequested { get; set; } = false;
         public bool Cancelled { get; set; } = false;
+        public bool Error { get; set; } = false;
     }
 
-    public class TaskWorker_net40 : IDisposable
+    public class TaskWorker : IDisposable
     {
         private Task task = null;
         private CancellationTokenSource source = null;
-        private CancellationToken token;
+        private CancellationToken token = CancellationToken.None;
         private TaskWorkerEventArgs taskWorkerEventArgs = new TaskWorkerEventArgs();
+        private TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         public Action<object, TaskWorkerEventArgs> TaskAction { get; set; }
+        public Action<object, TaskWorkerEventArgs> TaskProgress { get; set; }
         public Action<object, TaskWorkerEventArgs> TaskComplete { get; set; }
 
         private TaskCompletionSource<bool> taskCompletionSource = new TaskCompletionSource<bool>();
@@ -141,6 +148,62 @@ namespace StreamlineMVVM
             taskComplete();
         }
 
+        public void ReportProgressWait(object progress, int progressPercentage)
+        {
+            taskWorkerEventArgs.Progress = progress;
+            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
+
+            reportAsync(true);
+        }
+
+        public void ReportProgressWait()
+        {
+            reportAsync(true);
+        }
+
+        public void ReportProgressAsync(object progress, int progressPercentage)
+        {
+            taskWorkerEventArgs.Progress = progress;
+            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
+
+            reportAsync(false);
+        }
+
+        public void ReportProgressAsync()
+        {
+            reportAsync(false);
+        }
+
+        private void reportAsync(bool wait)
+        {
+            if (TaskProgress == null)
+            {
+                return;
+            }
+
+            Task reportTask = null;
+            try
+            {
+                reportTask = Task.Factory.StartNew(() => TaskProgress(this, taskWorkerEventArgs), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+                if (wait)
+                {
+                    reportTask.Wait();
+                }
+            }
+            catch (Exception Ex)
+            {
+                LogWriter.Exception("TaskWorker Error: Failed to run timeout task.", Ex);
+            }
+            finally
+            {
+                if (reportTask != null)
+                {
+                    reportTask.Dispose();
+                    reportTask = null;
+                }
+            }
+        }
+
         // Completed event that runs on the initial task start calling thread.
         public void taskComplete()
         {
@@ -151,7 +214,11 @@ namespace StreamlineMVVM
             }
             _IsBusy = false;
 
-            TaskComplete(this, taskWorkerEventArgs);
+            if (TaskComplete != null)
+            {
+                TaskComplete(this, taskWorkerEventArgs);
+            }
+
             Dispose();
         }
 
