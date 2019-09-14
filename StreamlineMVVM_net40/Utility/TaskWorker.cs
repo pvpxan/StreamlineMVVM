@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace StreamlineMVVM
 {
     // .net 4.0 compatible
-    
+
     // Wrapper class for TaskFactory wipped together to sort of simulate BackgroundWorker class but use the better Tasks technology.
     // Just mostly trying this out.
     public class TaskWorkerEventArgs
@@ -51,7 +51,7 @@ namespace StreamlineMVVM
 
             try
             {
-                taskCompletionSource.Task.ContinueWith((t) => CancelTask(), TaskScheduler.FromCurrentSynchronizationContext());
+                taskCompletionSource.Task.ContinueWith((t) => CancelTask(), taskScheduler);
             }
             catch (Exception Ex)
             {
@@ -94,7 +94,7 @@ namespace StreamlineMVVM
 
         private void runTask(object paramaters, TimeSpan taskTimeout)
         {
-            if (_IsBusy || TaskAction == null || TaskComplete == null)
+            if (_IsBusy || TaskAction == null)
             {
                 // This should probrably throw or something else.
                 return;
@@ -115,11 +115,11 @@ namespace StreamlineMVVM
             {
                 task = Task.Factory.
                     StartNew(() => TaskAction(this, taskWorkerEventArgs), token, TaskCreationOptions.None, TaskScheduler.Default).
-                    ContinueWith((t) => taskComplete(), TaskScheduler.FromCurrentSynchronizationContext());
+                    ContinueWith((completeTask) => taskComplete(completeTask), taskScheduler);
             }
             catch (Exception Ex)
             {
-                LogWriter.Exception("Error running task worker task.", Ex);
+                LogWriter.Exception("TaskWorker Error: Failed to run worker task.", Ex);
             }
         }
 
@@ -145,7 +145,7 @@ namespace StreamlineMVVM
 
             _CancellationRequested = true;
             taskWorkerEventArgs.Cancelled = true;
-            taskComplete();
+            taskComplete(null);
         }
 
         public void ReportProgressWait(object progress, int progressPercentage)
@@ -205,7 +205,7 @@ namespace StreamlineMVVM
         }
 
         // Completed event that runs on the initial task start calling thread.
-        public void taskComplete()
+        public void taskComplete(Task task)
         {
             // If the IsBusy is false, we just want to fizzle out. This means the Task was cancelled already.
             if (IsBusy == false)
@@ -213,6 +213,11 @@ namespace StreamlineMVVM
                 return;
             }
             _IsBusy = false;
+
+            if (task != null)
+            {
+                task.Dispose();
+            }
 
             if (TaskComplete != null)
             {
