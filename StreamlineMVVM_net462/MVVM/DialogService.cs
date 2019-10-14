@@ -188,7 +188,8 @@ namespace StreamlineMVVM
             }
             catch (Exception Ex)
             {
-                LogWriter.PostException("Error getting dialog result.", Ex);
+                LogWriter.PostException("Error errpr getting dialog result.", Ex);
+                // TODO (DB): This probably does not need to have anything here.
             }
 
             return result;
@@ -197,7 +198,6 @@ namespace StreamlineMVVM
         private static WindowMessageResult getDialogResult(DialogBaseWindowViewModel viewmodel, Window parentWindow, ShutdownMode shutdownMode)
         {
             DialogBaseWindow dialogBaseWindow = new DialogBaseWindow(viewmodel.dialogData);
-            dialogBaseWindow.DataContext = viewmodel;
 
             // Param shutdownMode can used to prevent the Application.Current from going null. It can be turned off by setting ApplicationExplicitShutdown.
             Application.Current.ShutdownMode = shutdownMode;
@@ -222,14 +222,8 @@ namespace StreamlineMVVM
                 dialogBaseWindow.Owner = parentWindow;
             }
 
-            try
-            {
-                dialogBaseWindow.ShowDialog();
-            }
-            catch (Exception Ex)
-            {
-                LogWriter.PostException("Error opening dialog window.", Ex);
-            }
+            dialogBaseWindow.DataContext = viewmodel;
+            dialogBaseWindow.ShowDialog();
 
             return (dialogBaseWindow.DataContext as DialogBaseWindowViewModel).UserDialogResult;
         }

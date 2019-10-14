@@ -49,21 +49,59 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialogs\DialogBaseWindow.xaml.cs">
+    <Compile Include="..\StreamlineMVVM_net462\Dialogs\DialogBaseWindow.xaml.cs">
+      <Link>Dialogs\DialogBaseWindow.xaml.cs</Link>
       <DependentUpon>DialogBaseWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\WindowsMessage.xaml.cs">
+    <Compile Include="..\StreamlineMVVM_net462\Dialogs\WindowsMessage.xaml.cs">
+      <Link>Dialogs\WindowsMessage.xaml.cs</Link>
       <DependentUpon>WindowsMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\DataMessaging.cs" />
-    <Compile Include="MVVM\DialogService.cs" />
-    <Compile Include="MVVM\Extensions.cs" />
-    <Compile Include="MVVM\MessageBoxEnhanced.cs" />
-    <Compile Include="MVVM\MessageBoxEnhancedWT.cs" />
-    <Compile Include="MVVM\MessageBoxEnhancedVMT.cs" />
-    <Compile Include="MVVM\RelayCommand.cs" />
-    <Compile Include="MVVM\ViewModelBase.cs" />
-    <Compile Include="MVVM\FactoryService.cs" />
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\DataMessaging.cs">
+      <Link>MVVM\DataMessaging.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\DialogService.cs">
+      <Link>MVVM\DialogService.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\Extensions.cs">
+      <Link>MVVM\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\FactoryService.cs">
+      <Link>MVVM\FactoryService.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\MessageBoxEnhanced.cs">
+      <Link>MVVM\MessageBoxEnhanced.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\MessageBoxEnhancedVMT.cs">
+      <Link>MVVM\MessageBoxEnhancedVMT.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\MessageBoxEnhancedWT.cs">
+      <Link>MVVM\MessageBoxEnhancedWT.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\RelayCommand.cs">
+      <Link>MVVM\RelayCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\MVVM\ViewModelBase.cs">
+      <Link>MVVM\ViewModelBase.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\Config.cs">
+      <Link>UtilityBase\Config.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\INI.cs">
+      <Link>UtilityBase\INI.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\LogWriterConsole.cs">
+      <Link>UtilityBase\LogWriterConsole.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\LogWriterExtended.cs">
+      <Link>UtilityBase\LogWriterExtended.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\RegexFunctions.cs">
+      <Link>UtilityBase\RegexFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\StreamlineMVVM_net462\UtilityBase\SystemIO.cs">
+      <Link>UtilityBase\SystemIO.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -77,12 +115,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Utility\Config.cs" />
-    <Compile Include="Utility\RegexFunctions.cs" />
-    <Compile Include="Utility\SystemIO.cs" />
-    <Compile Include="Utility\INI.cs" />
-    <Compile Include="Utility\LogWriterConsole.cs" />
-    <Compile Include="Utility\LogWriterExtended.cs" />
     <Compile Include="Utility\TaskWorker.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -93,45 +125,54 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Page Include="Dialogs\DialogBaseWindow.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Dialogs\DialogBaseWindow.xaml">
+      <Link>Dialogs\DialogBaseWindow.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogs\WindowsMessage.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Dialogs\WindowsMessage.xaml">
+      <Link>Dialogs\WindowsMessage.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\ButtonExtended.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\ButtonExtended.xaml">
+      <Link>Templates\ButtonExtended.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\CheckBox.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\CheckBox.xaml">
+      <Link>Templates\CheckBox.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\ListBoxExtended.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Templates\MergedResources.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\FlatComboBox.xaml">
+      <Link>Templates\FlatComboBox.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\FlatComboBox.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\GroupBoxImproved.xaml">
+      <Link>Templates\GroupBoxImproved.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\GroupBoxImproved.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\ListBoxExtended.xaml">
+      <Link>Templates\ListBoxExtended.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\ListViewExtended.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\ListViewExtended.xaml">
+      <Link>Templates\ListViewExtended.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Templates\ScrollBarExtended.xaml">
+    <Page Include="..\StreamlineMVVM_net462\Templates\MergedResources.xaml">
+      <Link>Templates\MergedResources.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="..\StreamlineMVVM_net462\Templates\ScrollBarExtended.xaml">
+      <Link>Templates\ScrollBarExtended.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

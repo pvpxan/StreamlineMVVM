@@ -80,12 +80,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Utility\Config.cs" />
-    <Compile Include="Utility\RegexFunctions.cs" />
-    <Compile Include="Utility\SystemIO.cs" />
-    <Compile Include="Utility\INI.cs" />
-    <Compile Include="Utility\LogWriterConsole.cs" />
-    <Compile Include="Utility\LogWriterExtended.cs" />
+    <Compile Include="UtilityBase\Config.cs" />
+    <Compile Include="UtilityBase\RegexFunctions.cs" />
+    <Compile Include="UtilityBase\SystemIO.cs" />
+    <Compile Include="UtilityBase\INI.cs" />
+    <Compile Include="UtilityBase\LogWriterConsole.cs" />
+    <Compile Include="UtilityBase\LogWriterExtended.cs" />
     <Compile Include="Utility\TaskWorker.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

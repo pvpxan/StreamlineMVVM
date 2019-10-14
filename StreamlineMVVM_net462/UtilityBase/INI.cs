@@ -188,13 +188,21 @@ namespace StreamlineMVVM
 
         public static bool MultiWrite(string file, INISection[] iniSectionList, bool overwrite, bool create, bool backup)
         {
-            if (string.IsNullOrEmpty(file) || iniSectionList == null || iniSectionList.Length <= 0)
+            if (string.IsNullOrEmpty(file) || iniSectionList == null)
             {
                 return false;
             }
 
             iniLocker.EnterWriteLock();
-            bool success = safeWrite(file, iniSectionList, overwrite, create, backup);
+            bool success = false;
+            if (iniSectionList.Length <= 0 && create)
+            {
+                success = writeAllLines(file, "", backup);
+            }
+            else
+            {
+                success = safeWrite(file, iniSectionList, overwrite, create, backup);
+            }
             iniLocker.ExitWriteLock();
             return success;
         }

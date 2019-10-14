@@ -10,14 +10,18 @@ namespace StreamlineMVVM
     // .net 4.6.2 compatible
 
     // Wrapper class for TaskFactory wipped together to sort of simulate BackgroundWorker class but use the better Tasks technology.
-    // Just mostly trying this out.
+    public class TaskWorkerProgress
+    {
+        public int ProgressPercentage { get; set; }
+        public object Progress { get; set; }
+    }
+
     public class TaskWorkerEventArgs
     {
         public object Parameters { get; set; }
         public int ProgressPercentage { get; set; }
         public object Progress { get; set; }
         public object Results { get; set; }
-        public bool CancellationRequested { get; set; } = false;
         public bool Cancelled { get; set; } = false;
         public bool Error { get; set; } = false;
     }
@@ -31,7 +35,7 @@ namespace StreamlineMVVM
         private TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         public Action<object, TaskWorkerEventArgs> TaskAction { get; set; }
-        public Action<object, TaskWorkerEventArgs> TaskProgress { get; set; }
+        public Action<object, TaskWorkerProgress> TaskProgress { get; set; }
         public Action<object, TaskWorkerEventArgs> TaskComplete { get; set; }
 
         private readonly TimeSpan defaultTaskTimeout = TimeSpan.FromSeconds(0);
@@ -155,31 +159,33 @@ namespace StreamlineMVVM
 
         public void ReportProgressWait(object progress, int progressPercentage)
         {
-            taskWorkerEventArgs.Progress = progress;
-            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
-
-            reportAsync(true);
+            reportAsync(true, new TaskWorkerProgress()
+            {
+                Progress = progress,
+                ProgressPercentage = progressPercentage,
+            });
         }
 
         public void ReportProgressWait()
         {
-            reportAsync(true);
+            reportAsync(true, new TaskWorkerProgress());
         }
 
         public void ReportProgressAsync(object progress, int progressPercentage)
         {
-            taskWorkerEventArgs.Progress = progress;
-            taskWorkerEventArgs.ProgressPercentage = progressPercentage;
-
-            reportAsync(false);
+            reportAsync(false, new TaskWorkerProgress()
+            {
+                Progress = progress,
+                ProgressPercentage = progressPercentage,
+            });
         }
 
         public void ReportProgressAsync()
         {
-            reportAsync(false);
+            reportAsync(false, new TaskWorkerProgress());
         }
 
-        private void reportAsync(bool wait)
+        private void reportAsync(bool wait, TaskWorkerProgress taskWorkerProgress)
         {
             if (TaskProgress == null)
             {
@@ -189,7 +195,7 @@ namespace StreamlineMVVM
             Task reportTask = null;
             try
             {
-                reportTask = Task.Factory.StartNew(() => TaskProgress(this, taskWorkerEventArgs), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+                reportTask = Task.Factory.StartNew(() => TaskProgress(this, taskWorkerProgress), CancellationToken.None, TaskCreationOptions.None, taskScheduler);
                 if (wait)
                 {
                     reportTask.Wait();
@@ -230,9 +236,11 @@ namespace StreamlineMVVM
         // Although this class method internally cleans up it is still good to expose this method just in case.
         public void Dispose()
         {
+            taskWorkerEventArgs = new TaskWorkerEventArgs();
+
             try
             {
-                if (task != null)
+                if (task != null && task.IsCompleted)
                 {
                     task.Dispose();
                 }
@@ -251,7 +259,6 @@ namespace StreamlineMVVM
             task = null;
             source = null;
             token = CancellationToken.None;
-            taskWorkerEventArgs = new TaskWorkerEventArgs();
         }
     }
 }
