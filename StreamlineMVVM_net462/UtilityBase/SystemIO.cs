@@ -123,20 +123,22 @@ namespace StreamlineMVVM
                 // Copy each file into the new directory.
                 foreach (FileInfo fi in source.GetFiles())
                 {
-                    OutputResult file_result = new OutputResult();
+                    OutputResult fileResult = new OutputResult();
 
                     try
                     {
-                        file_result.Filepath = fi.FullName;
+                        fileResult.Filepath = fi.FullName;
 
                         fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
                     }
                     catch (Exception Ex)
                     {
-                        file_result.Success = false;
+                        fileResult.Success = false;
 
                         LogWriter.Exception("Failed to copy file: " + fi.FullName, Ex);
                     }
+
+                    output.Add(fileResult);
                 }
 
                 // Copy each subdirectory using recursion.
