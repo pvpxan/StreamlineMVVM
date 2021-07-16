@@ -1,97 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace StreamlineMVVM
 {
-    /// <summary>
-    /// Interaction logic for WindowsMessage.xaml
-    /// </summary>
-    public partial class WindowsMessage : UserControl
-    {
-        public WindowsMessage()
-        {
-            try
-            {
-                InitializeComponent();
-            }
-            catch (Exception Ex)
-            {
-                LogWriter.PostException("Error opening window message user control.", Ex);
-                // TODO (DB): Create some sort of error log in a default windows directory.
-            }
-        }
-
-        private void hyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            using (Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)))
-            {
-                e.Handled = true;
-            }
-        }
-    }
-
-    public class WindowsMessageViewModel : DialogBaseWindowViewModel
+    public class WindowsMessageViewModel : DialogViewModel
     {
         // ViewModel Only Vars
         // ---------------------------------------------------------------------------------------------------------------------------------------------
-        // TODO (DB): There might be some functionality added that requires this section.
+        // TODO (DB) : Reserved for future possible changes.
         // ---------------------------------------------------------------------------------------------------------------------------------------------
 
         // Constructor
         // ---------------------------------------------------------------------------------------------------------------------------------------------
-        public WindowsMessageViewModel(DialogData data) : base(data)
+        public WindowsMessageViewModel(DialogData dialogData) : base(dialogData)
         {
-            MessageIcon = GetIcon(data.MessageIcon);
-            ContentHeader = data.ContentHeader;
+            MessageIcon = getIcon(dialogData.MessageIcon);
+            ContentHeader = dialogData.ContentHeader;
 
-            if (data.ContentBody.Length > 0)
+            if (dialogData.ContentBody.Length > 0)
             {
                 ContentBodyVisibility = Visibility.Visible;
-                ContentBody = data.ContentBody;
+                ContentBody = dialogData.ContentBody;
             }
 
-            if (data.HyperLinkUri.Length > 0)
+            if (dialogData.HyperLinkUri.Length > 0)
             {
                 HyperLinkIsEnabled = true;
                 HyperLinkVisibility = Visibility.Visible;
 
-                HyperLinkUri = data.HyperLinkUri;
+                HyperLinkUri = dialogData.HyperLinkUri;
 
-                if (data.HyperLinkText.Length > 0)
+                if (dialogData.HyperLinkText.Length > 0)
                 {
-                    HyperLinkText = data.HyperLinkText;
+                    HyperLinkText = dialogData.HyperLinkText;
                 }
                 else
                 {
-                    HyperLinkText = data.HyperLinkUri;
+                    HyperLinkText = dialogData.HyperLinkUri;
                 }
             }
 
-            Loaded = new RelayCommand(loadedCommand);
-            Rendered = new RelayCommand(renderedCommand);
+            // Currently nothing is loading/rendering so will save this for potential future additions.
+            // Subscribes to the Loaded/Rendered Event of the DialogBaseWindow.
+            // OnContentLoaded += windowContentLoaded;
+            // OnContentRendered += windowContentRendered;
 
-            // Subscribes to the Rendered Event of the DialogBaseWindow that sets this control as its datacontext.
-            WindowRenderedEvent.OnContentRendered += delegate { renderedCommand(DialogWindow); };
-
-            switch (data.MessageButtons)
+            switch (dialogData.MessageButtons)
             {
                 case WindowMessageButtons.Default:
 
@@ -205,68 +169,89 @@ namespace StreamlineMVVM
 
                 case WindowMessageButtons.Misc:
 
-                    if (data.MiscButtoms.Misc1.Length > 0)
+                    if (string.IsNullOrEmpty(dialogData.MiscButtoms.Misc1) == false)
                     {
-                        LeftContent = data.MiscButtoms.Misc1;
+                        LeftContent = dialogData.MiscButtoms.Misc1;
                         LeftIsEnabled = true;
                         LeftVisibility = Visibility.Visible;
 
                         LeftButton = new RelayCommand(misc1Command);
                     }
-
-                    if (data.MiscButtoms.Misc2.Length > 0)
+                    else
                     {
-                        CenterContent = data.MiscButtoms.Misc2;
+                        if (dialogData.MessageButtonFocus == WindowButtonFocus.Left)
+                        {
+                            dialogData.MessageButtonFocus = WindowButtonFocus.Center;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(dialogData.MiscButtoms.Misc2) == false)
+                    {
+                        CenterContent = dialogData.MiscButtoms.Misc2;
                         CenterIsEnabled = true;
                         CenterVisibility = Visibility.Visible;
 
                         CenterButton = new RelayCommand(custom2Command);
                     }
-
-                    if (data.MiscButtoms.Misc3.Length > 0)
+                    else
                     {
-                        RightContent = data.MiscButtoms.Misc3;
+                        if (dialogData.MessageButtonFocus == WindowButtonFocus.Center)
+                        {
+                            dialogData.MessageButtonFocus = WindowButtonFocus.Right;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(dialogData.MiscButtoms.Misc3) == false)
+                    {
+                        RightContent = dialogData.MiscButtoms.Misc3;
                         RightIsEnabled = true;
                         RightVisibility = Visibility.Visible;
 
                         RightButton = new RelayCommand(custom3Command);
+                    }
+                    else
+                    {
+                        if (dialogData.MessageButtonFocus == WindowButtonFocus.Right)
+                        {
+                            dialogData.MessageButtonFocus = WindowButtonFocus.Left;
+                        }
                     }
 
                     break;
             }
         }
 
-        private BitmapSource GetIcon(WindowMessageIcon icontype)
+        private BitmapSource getIcon(WindowMessageIcon icontype)
         {
-            BitmapSource bitmapSource = null;
-
             try
             {
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
-                    bitmapSource = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                });
+                Icon icon = (Icon)typeof(SystemIcons).GetProperty(Convert.ToString(icontype), BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+                return Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             }
-            catch (Exception Ex)
+            catch
             {
-                LogWriter.PostException("Error reading bitmap source from system icons.", Ex);
                 // TODO (DB): This probably does not need to have anything here.
+                return null;
             }
+        }
 
-            return bitmapSource;
+        private void windowContentLoaded(object sender, RoutedEventArgs e)
+        {
+            //TODO (DB): Possibly add some loaded events.
+        }
+
+        private void windowContentRendered(object sender, EventArgs e)
+        {
+            //TODO (DB): Possibly add some rendered events.
         }
 
         // Bound Variables
         // ---------------------------------------------------------------------------------------------------------------------------------------------
         // -----------------------------------------------------
-        private BitmapSource _MessageIcon;
+        private BitmapSource _MessageIcon = null;
         public BitmapSource MessageIcon
         {
-            get
-            {
-                return _MessageIcon;
-            }
+            get { return _MessageIcon; }
             set
             {
                 _MessageIcon = value;
@@ -278,10 +263,7 @@ namespace StreamlineMVVM
         private System.Windows.Media.Brush _ContentHeaderColor = System.Windows.Media.Brushes.DarkBlue;
         public System.Windows.Media.Brush ContentHeaderColor
         {
-            get
-            {
-                return _ContentHeaderColor;
-            }
+            get { return _ContentHeaderColor; }
             set
             {
                 _ContentHeaderColor = value;
@@ -293,10 +275,7 @@ namespace StreamlineMVVM
         private string _ContentHeader = "";
         public string ContentHeader
         {
-            get
-            {
-                return _ContentHeader;
-            }
+            get { return _ContentHeader; }
             set
             {
                 _ContentHeader = value;
@@ -305,13 +284,10 @@ namespace StreamlineMVVM
         }
 
         // -----------------------------------------------------
-        private Visibility _ContentBodyVisibility = System.Windows.Visibility.Collapsed;
+        private Visibility _ContentBodyVisibility = Visibility.Collapsed;
         public Visibility ContentBodyVisibility
         {
-            get
-            {
-                return _ContentBodyVisibility;
-            }
+            get { return _ContentBodyVisibility; }
             set
             {
                 _ContentBodyVisibility = value;
@@ -323,10 +299,7 @@ namespace StreamlineMVVM
         private System.Windows.Media.Brush _ContentBodyColor = System.Windows.Media.Brushes.Black;
         public System.Windows.Media.Brush ContentBodyColor
         {
-            get
-            {
-                return _ContentBodyColor;
-            }
+            get { return _ContentBodyColor; }
             set
             {
                 _ContentBodyColor = value;
@@ -338,10 +311,7 @@ namespace StreamlineMVVM
         private string _ContentBody = "";
         public string ContentBody
         {
-            get
-            {
-                return _ContentBody;
-            }
+            get { return _ContentBody; }
             set
             {
                 _ContentBody = value;
@@ -353,10 +323,7 @@ namespace StreamlineMVVM
         private bool _HyperLinkIsEnabled = false;
         public bool HyperLinkIsEnabled
         {
-            get
-            {
-                return _HyperLinkIsEnabled;
-            }
+            get { return _HyperLinkIsEnabled; }
             set
             {
                 _HyperLinkIsEnabled = value;
@@ -365,13 +332,10 @@ namespace StreamlineMVVM
         }
 
         // -----------------------------------------------------
-        private Visibility _HyperLinkVisibility = System.Windows.Visibility.Collapsed;
+        private Visibility _HyperLinkVisibility = Visibility.Collapsed;
         public Visibility HyperLinkVisibility
         {
-            get
-            {
-                return _HyperLinkVisibility;
-            }
+            get { return _HyperLinkVisibility; }
             set
             {
                 _HyperLinkVisibility = value;
@@ -383,10 +347,7 @@ namespace StreamlineMVVM
         private System.Windows.Media.Brush _HyperLinkColor = System.Windows.Media.Brushes.Blue;
         public System.Windows.Media.Brush HyperLinkColor
         {
-            get
-            {
-                return _HyperLinkColor;
-            }
+            get { return _HyperLinkColor; }
             set
             {
                 _HyperLinkColor = value;
@@ -398,10 +359,7 @@ namespace StreamlineMVVM
         private System.Windows.Media.Brush _HyperLinkMouseOverColor = System.Windows.Media.Brushes.Red;
         public System.Windows.Media.Brush HyperLinkMouseOverColor
         {
-            get
-            {
-                return _HyperLinkMouseOverColor;
-            }
+            get { return _HyperLinkMouseOverColor; }
             set
             {
                 _HyperLinkMouseOverColor = value;
@@ -413,10 +371,7 @@ namespace StreamlineMVVM
         private System.Windows.Media.Brush _HyperLinkMouseDisabledColor = System.Windows.Media.Brushes.Gray;
         public System.Windows.Media.Brush HyperLinkMouseDisabledColor
         {
-            get
-            {
-                return _HyperLinkMouseDisabledColor;
-            }
+            get { return _HyperLinkMouseDisabledColor; }
             set
             {
                 _HyperLinkMouseDisabledColor = value;
@@ -428,10 +383,7 @@ namespace StreamlineMVVM
         private string _HyperLinkUri = "";
         public string HyperLinkUri
         {
-            get
-            {
-                return _HyperLinkUri;
-            }
+            get { return _HyperLinkUri; }
             set
             {
                 _HyperLinkUri = value;
@@ -443,10 +395,7 @@ namespace StreamlineMVVM
         private string _HyperLinkText = "";
         public string HyperLinkText
         {
-            get
-            {
-                return _HyperLinkText;
-            }
+            get { return _HyperLinkText; }
             set
             {
                 _HyperLinkText = value;
@@ -458,10 +407,7 @@ namespace StreamlineMVVM
         private string _LeftContent = "";
         public string LeftContent
         {
-            get
-            {
-                return _LeftContent;
-            }
+            get { return _LeftContent; }
             set
             {
                 _LeftContent = value;
@@ -473,10 +419,7 @@ namespace StreamlineMVVM
         private bool _LeftIsEnabled = false;
         public bool LeftIsEnabled
         {
-            get
-            {
-                return _LeftIsEnabled;
-            }
+            get { return _LeftIsEnabled; }
             set
             {
                 _LeftIsEnabled = value;
@@ -485,13 +428,10 @@ namespace StreamlineMVVM
         }
 
         // -----------------------------------------------------
-        private Visibility _LeftVisibility = System.Windows.Visibility.Hidden;
+        private Visibility _LeftVisibility = Visibility.Hidden;
         public Visibility LeftVisibility
         {
-            get
-            {
-                return _LeftVisibility;
-            }
+            get { return _LeftVisibility; }
             set
             {
                 _LeftVisibility = value;
@@ -503,10 +443,7 @@ namespace StreamlineMVVM
         private string _CenterContent = "";
         public string CenterContent
         {
-            get
-            {
-                return _CenterContent;
-            }
+            get { return _CenterContent; }
             set
             {
                 _CenterContent = value;
@@ -518,10 +455,7 @@ namespace StreamlineMVVM
         private bool _CenterIsEnabled = false;
         public bool CenterIsEnabled
         {
-            get
-            {
-                return _CenterIsEnabled;
-            }
+            get { return _CenterIsEnabled; }
             set
             {
                 _CenterIsEnabled = value;
@@ -530,13 +464,10 @@ namespace StreamlineMVVM
         }
 
         // -----------------------------------------------------
-        private Visibility _CenterVisibility = System.Windows.Visibility.Hidden;
+        private Visibility _CenterVisibility = Visibility.Hidden;
         public Visibility CenterVisibility
         {
-            get
-            {
-                return _CenterVisibility;
-            }
+            get { return _CenterVisibility; }
             set
             {
                 _CenterVisibility = value;
@@ -548,10 +479,7 @@ namespace StreamlineMVVM
         private string _RightContent = "";
         public string RightContent
         {
-            get
-            {
-                return _RightContent;
-            }
+            get { return _RightContent; }
             set
             {
                 _RightContent = value;
@@ -563,10 +491,7 @@ namespace StreamlineMVVM
         private bool _RightIsEnabled = false;
         public bool RightIsEnabled
         {
-            get
-            {
-                return _RightIsEnabled;
-            }
+            get { return _RightIsEnabled; }
             set
             {
                 _RightIsEnabled = value;
@@ -575,13 +500,10 @@ namespace StreamlineMVVM
         }
 
         // -----------------------------------------------------
-        private Visibility _RightVisibility = System.Windows.Visibility.Hidden;
+        private Visibility _RightVisibility = Visibility.Hidden;
         public Visibility RightVisibility
         {
-            get
-            {
-                return _RightVisibility;
-            }
+            get { return _RightVisibility; }
             set
             {
                 _RightVisibility = value;
@@ -591,23 +513,6 @@ namespace StreamlineMVVM
 
         // Bound Commands
         // ---------------------------------------------------------------------------------------------------------------------------------------------
-        // -----------------------------------------------------
-        public ICommand Loaded { get; private set; }
-        private void loadedCommand(object parameter)
-        {
-            //TODO (DB): Possible add some loaded events.
-        }
-
-        // -----------------------------------------------------
-        public ICommand Rendered { get; private set; }
-        private void renderedCommand(object parameter)
-        {
-            if (Application.Current != null)
-            {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
-            }
-        }
-
         // -----------------------------------------------------
         public ICommand LeftButton { get; private set; }
         public ICommand CenterButton { get; private set; }

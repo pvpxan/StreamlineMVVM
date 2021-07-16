@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.705
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamlineMVVM_net40", "StreamlineMVVM_net40\StreamlineMVVM_net40.csproj", "{C7B1AD9E-14AE-45DF-8E14-78A9BE9AE738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamlineMVVM_net462", "StreamlineMVVM_net462\StreamlineMVVM_net462.csproj", "{EC387D89-AE73-4485-8D91-3191E0ACB74F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamlineMVVM_net472", "StreamlineMVVM_net462\StreamlineMVVM_net472.csproj", "{EC387D89-AE73-4485-8D91-3191E0ACB74F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

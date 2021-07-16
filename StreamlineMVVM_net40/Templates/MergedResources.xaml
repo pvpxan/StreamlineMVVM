@@ -17,16 +17,24 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    Library Building Note:
+    When adding this Framework to another library:
+    Change "StreamlineMVVM" below to the assembly name of your library.
+    Also the above references of StreamlineMVVM must also be changed.
 -->
     
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ButtonExtended.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/CheckBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/CheckBoxExtended.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml" />
         <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/ScrollBarExtended.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/TextBoxExtended.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/StreamlineMVVM;component/Templates/TreeViewExtended.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
+    

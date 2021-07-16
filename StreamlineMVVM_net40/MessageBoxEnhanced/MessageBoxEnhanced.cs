@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace StreamlineMVVM
 {
@@ -90,41 +91,48 @@ namespace StreamlineMVVM
             return data;
         }
 
-        // Base set of overload methdods.
-        // Sets Window Title and Message Content.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader)
+        private static DialogUserControlView generateDialogViews(DialogData dialogData)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader), null as Window);
+            dialogData.RenderWait = true; // For these to work, we always to want to set this.
+            WindowsMessageViewModel windowsMessageViewModel = new WindowsMessageViewModel(dialogData);
+            return new DialogUserControlView(windowsMessageViewModel, new WindowsMessage(windowsMessageViewModel));
         }
 
-        // Sets Window Title, Message Content, Message Buttons, and Message Icon.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
+        // Opens Window Message based on DialogData and sets owner of that window to the passed in paramater and sets shutdownmode.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, Window parentWindow, ShutdownMode shutdownMode)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader, "", "", "", windowMessageButtons, windowMessageIcon), null as Window);
+            return DialogService.OpenDialog(generateDialogViews(data), parentWindow, shutdownMode);
         }
 
-        // Sets Window Title, Message Header, Message Body, Message Buttons, and Message Icon.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, Window parentWindow)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader, contentBody, "", "", windowMessageButtons, windowMessageIcon), null as Window);
+            return DialogService.OpenDialog(generateDialogViews(data), parentWindow);
         }
 
-        // Sets Window Title, Message Header, Message Body, Message HyperLink, Message Buttons, and Message Icon.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, string hyperLink, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
+        // Opens Window Message based on DialogData and sets the shutdownmode.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, ShutdownMode shutdownMode)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader, contentBody, "", hyperLink, windowMessageButtons, windowMessageIcon), null as Window);
+            return DialogService.OpenDialog(generateDialogViews(data), shutdownMode);
         }
 
-        // Sets Window Title, Message Header, Message Body, Message HyperLink Text, Message HyperLink Uri, Message Buttons, and Message Icon.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, string hyperLinkText, string hyperLinkUri, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon)
+        // Opens Window Message based on DialogData and no other parameters.
+        public static WindowMessageResult OpenWindowMessage(DialogData data)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader, contentBody, hyperLinkText, hyperLinkUri, windowMessageButtons, windowMessageIcon), null as Window);
+            return DialogService.OpenDialog(generateDialogViews(data));
         }
 
-        // Sets Window Title, Message Header, Message Body, Message HyperLink Text, Message HyperLink Uri, Message Buttons, Message Icon, and Color Set.
-        public static WindowMessageResult Show(string windowTitle, string contentHeader, string contentBody, string hyperLinkText, string hyperLinkUri, WindowMessageButtons windowMessageButtons, WindowMessageIcon windowMessageIcon, WindowMessageColorSet windowMessageColorSet)
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater. Application Objects ShutdownMode set to the current ShutdownMode.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, ViewModelBase viewModelBase)
         {
-            return DialogService.OpenWindowMessage(dialogDataBuilder(windowTitle, contentHeader, contentBody, hyperLinkText, hyperLinkUri, windowMessageButtons, windowMessageIcon), null as Window);
+            return DialogService.OpenDialog(generateDialogViews(data), FactoryService.GetWindowReference(viewModelBase));
         }
+
+        // Opens Window Message based on DialogData and sets the owner of that window to the passed in paramater.
+        public static WindowMessageResult OpenWindowMessage(DialogData data, ViewModelBase viewModelBase, ShutdownMode shutdownMode)
+        {
+            return DialogService.OpenDialog(generateDialogViews(data), FactoryService.GetWindowReference(viewModelBase), shutdownMode);
+        }
+        // ---------------------------------------------------------
     }
 }

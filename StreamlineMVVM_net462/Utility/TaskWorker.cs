@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreamlineMVVM
 {
-    // .net 4.6.2 compatible
+    // .net 4.7.2 compatible
 
     // Wrapper class for TaskFactory wipped together to sort of simulate BackgroundWorker class but use the better Tasks technology.
     public class TaskWorkerProgress

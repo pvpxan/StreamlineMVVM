@@ -25,12 +25,10 @@ namespace StreamlineMVVM
         {
             try
             {
-                int index = factoryList.FindIndex(f => f.ViewModelBaseReference == viewModelBase);
-                factoryList.RemoveAt(index);
+                int removed = factoryList.RemoveAll(f => f.ViewModelBaseReference == viewModelBase);
             }
-            catch (Exception Ex)
+            catch
             {
-                LogWriter.PostException("Error removing viewmodel from window factory reference list.", Ex);
                 // Nothing for now.
             }
         }
@@ -47,9 +45,8 @@ namespace StreamlineMVVM
                 Window window = factoryList.FirstOrDefault(w => w.ViewModelBaseReference == viewModelBase).WindowReference;
                 return window;
             }
-            catch (Exception Ex)
+            catch
             {
-                LogWriter.PostException("Error getting window reference from window factory reference list.", Ex);
                 return null;
             }
         }

@@ -6,16 +6,23 @@
     <Style x:Key="ListBoxItemExtended" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Padding" Value="4,1"/>
-        <!-- These are part of the default template and are here as a reference if/when this template changes.
+
+        <!-- NOTE: You can get binding errors of the properties below if you define this style in a ListBox Resources instead of the ItemContainerStyle. -->
         <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        
+        <!-- These are part of the default .net 4.0 template and are here as a reference if/when this template changes.
+        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
         -->
+
+        <!-- This is potentially another option for getting a default value but this will only work with ListBox controls then.
         <Setter Property="HorizontalContentAlignment"
                 Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}, Path=HorizontalContentAlignment}"/>
         <Setter Property="VerticalContentAlignment"
                 Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}, Path=VerticalContentAlignment}"/>
-        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        -->
+
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -82,7 +89,7 @@
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
                             <Setter Property="IsSelected" Value="True" />
                         </Trigger>
-                        -->
+                        -->     
 
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="Bd" Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>

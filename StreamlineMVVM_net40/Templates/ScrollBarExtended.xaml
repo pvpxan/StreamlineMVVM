@@ -3,36 +3,16 @@
                     xmlns:ext="clr-namespace:StreamlineMVVM">
 
     <!-- START Pain in the arse scroll bar style...wow -->
-    <!--Scrollbar Thumbs-->
-    <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Grid x:Name="Grid">
-                        <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                   Width="Auto" Height="Auto" Fill="Transparent"/>
-                        <Border x:Name="Rectangle1" CornerRadius="5"
-                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                Width="Auto" Height="Auto" Margin="2,2,8,-2"
-                                Background="{TemplateBinding Background}"/>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Tag" Value="Horizontal">
-                            <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                            <Setter TargetName="Rectangle1" Property="Height" Value="Auto" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!--ScrollBars-->
     <Style x:Key="ScrollBarExtended" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
         <Setter Property="Foreground" Value="SteelBlue" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Width" Value="8" />
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="MinHeight" Value="5"/>
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="MinWidth" Value="10"/>
+        <Setter Property="ext:Extensions.CornerRadius" Value="0"/>
         <Setter Property="ext:Extensions.MouseOverBackground" Value="DodgerBlue"/>
         <Setter Property="ext:Extensions.MouseDownBackground" Value="RoyalBlue"/>
 
@@ -40,14 +20,32 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid x:Name="GridRoot" Width="Auto" Background="{TemplateBinding Background}">
+                    <Grid x:Name="GridRoot" Width="Auto" Height="Auto" Margin="2,0,0,0" Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0.00001*" />
+                            <!-- TODO(DB) Add in a system with triggers to enable or disable RepeatButton controls. -->
                         </Grid.RowDefinitions>
+
+                        <Grid.Resources>
+                            <!--Scrollbar Thumbs-->
+                            <Style x:Key="ScrollBarExtendedThumb" TargetType="{x:Type Thumb}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Thumb}">
+                                            <Border x:Name="ScrollThumbBorder" BorderThickness="0"
+                                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                    Width="Auto" Height="Auto"
+                                                    CornerRadius="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollBar}, Path=(ext:Extensions.CornerRadius)}"
+                                                    Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ScrollBar}, Path=Foreground}"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Grid.Resources>
 
                         <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
                             <Track.Thumb>
-                                <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
+                                <Thumb x:Name="Thumb" Style="{StaticResource ScrollBarExtendedThumb}"/>
                             </Track.Thumb>
                             <Track.IncreaseRepeatButton>
                                 <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
