@@ -40,7 +40,6 @@
   * `LogDisplay(string log, MessageBoxImage messageBoxImage, Window window)`
   * `ExceptionDisplay(string log, Exception ex, bool showFull)`
   * `ExceptionDisplay(string log, Exception ex, bool showFull, Window window)`
-
 * `Config` - Writes to `app.config`.
   * `string Read(string key)` Used for reading `app.config` file.
   * `bool Update(string key, string value)` Writes to `app.config` file.
@@ -49,7 +48,6 @@
   * `int? ReadInt(string file, string key)`
   * `string Read(string file, string key)`
   * `bool Write(string file, string key, string value, bool create, bool backup)`
-
 * `SystemIO` - Simple IO wrapping.
   * `PathType GetPathType(string path)`
   * `bool Delete(string file)`
@@ -79,21 +77,15 @@
 # Styles/Templates
 * Some of these are a semi work in progress, but all work well when you know how to use them.
 `pack://application:,,,/StreamlineMVVM;component/Templates/ButtonExtended.xaml`\
-`pack://application:,,,/StreamlineMVVM;component/Templates/CheckBox.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/CheckBoxExtended.xaml`\
 `pack://application:,,,/StreamlineMVVM;component/Templates/FlatComboBox.xaml`\
 `pack://application:,,,/StreamlineMVVM;component/Templates/GroupBoxImproved.xaml`\
-`pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml`\
 `pack://application:,,,/StreamlineMVVM;component/Templates/ListBoxExtended.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/ListViewExtended.xaml`\
 `pack://application:,,,/StreamlineMVVM;component/Templates/ScrollBarExtended.xaml`
+`pack://application:,,,/StreamlineMVVM;component/Templates/TextBoxExtended.xaml`\
+`pack://application:,,,/StreamlineMVVM;component/Templates/TreeViewExtended.xaml`\
 
 # DialogBaseWindow
 * Generic Window with a bound content presenter.
-* When adding a custom dialog control that uses this window, add below to a merged application dictionary.
-* __NOTE:__
-  * If you are embedding this library, this XAML code must be loaded AFTER the DLL is loaded or things will not work.
-    
-`<ResourceDictionary>`\
-    `<DataTemplate DataType="{x:Type local:YourViewModel}">`\
-        `<local:YourControl/>`\
-    `</DataTemplate>`\
-`</ResourceDictionary>`
+* Creating custom dialogs requires use of `DialogViewModel` to extend a datacontext class of your own making.
