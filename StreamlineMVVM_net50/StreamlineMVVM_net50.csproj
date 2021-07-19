@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>StreamlineMVVM</AssemblyName>
+    <Description>MVVM Framework (.net 5.0 or greater)</Description>
+    <Version>1.0.0.1</Version>
+    <Authors>David Bentley</Authors>
+    <Copyright>Copyright ©  2021</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/pvpxan/StreamlineMVVM</PackageProjectUrl>
+    <RootNamespace>StreamlineMVVM</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Graphics\search-icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Graphics\search-icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\LoadingAnimation.xaml.cs">
+      <DependentUpon>LoadingAnimation.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Dialogs\DialogBaseWindow.xaml.cs">
+      <DependentUpon>DialogBaseWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MessageBoxEnhanced\WindowsMessage.xaml.cs">
+      <DependentUpon>WindowsMessage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

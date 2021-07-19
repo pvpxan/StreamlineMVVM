@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("StreamlineMVVM")]
-[assembly: AssemblyDescription("MVVM Framework (.net 4.0)")]
+[assembly: AssemblyDescription("MVVM Framework (.net Framework 4.0 or greater)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("PvPXan Productions")]
 [assembly: AssemblyProduct("StreamlineMVVM")]
