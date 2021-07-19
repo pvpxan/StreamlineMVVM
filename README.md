@@ -6,10 +6,11 @@
   * INI File Handling
   * Minor System.IO wrapping
   * Specialized Regex Match/Replace
+  * Tools to help create robust Window Factory classes.
 * Also can add custom dialogs by creating a User Control and using that as the DataTemplate for window content.
 * Two versions available for compatibility with 2 different .net Framework distributions.
   * .net Framework 4.0
-  * .net Framework 4.7.2
+  * .net 5.0
 
 # Injection
 * Add Reference: StreamlineMVVM.dll
@@ -31,33 +32,16 @@
   * Downside is you have to call an explicit shutdown or change the setting back.
 
 # Classes
-* `LogWriter` - The Logging classes are simple thread safe log writers with multiple options.
-  * `bool SetPath(string path, string user, string application)` (Needed to assign where you want the log files to go.)
-  * `Exception(string log, Exception ex)`
-  * `LogEntry(string log)`
-* `LogWriterWPF`
-  * `LogDisplay(string log, MessageBoxImage messageType)`
-  * `LogDisplay(string log, MessageBoxImage messageBoxImage, Window window)`
-  * `ExceptionDisplay(string log, Exception ex, bool showFull)`
-  * `ExceptionDisplay(string log, Exception ex, bool showFull, Window window)`
-* `Config` - Writes to `app.config`.
-  * `string Read(string key)` Used for reading `app.config` file.
-  * `bool Update(string key, string value)` Writes to `app.config` file.
-* `INI` - Writes to INI files.
-  * `bool? ReadBool(string file, string key)`
-  * `int? ReadInt(string file, string key)`
-  * `string Read(string file, string key)`
-  * `bool Write(string file, string key, string value, bool create, bool backup)`
-* `SystemIO` - Simple IO wrapping.
-  * `PathType GetPathType(string path)`
-  * `bool Delete(string file)`
-  * `bool Copy(string fileSource, string fileTarget, bool overwrite)`
-  * `bool CreateDirectory(string directory)`
-  * `OutputResult[] CopyDirectory(string sourceDirectory, string targetDirectory)`
-* `RegexFunctions`
-  * Lots of matching and replacing based on number, special characters, and spacing.
-* `FactoryService`
+* `DialogService` - Methods ingests User Control and ViewModel based off `DialogViewModel` to create dialog windows.
+  * `WindowMessageResult OpenDialog(DialogUserControlView dialogUserControlView, Window parentWindow, ShutdownMode shutdownMode)`
+  * `WindowMessageResult OpenDialog(DialogWindowView dialogWindowView, Window parentWindow, ShutdownMode shutdownMode)`
+  * The above methods have multiple overloads.
+* `DialogData`
   * Pretty new addition with tools to help create robust Window Factory classes.
+* `DialogViewModel`
+  * ViewModel base class focused around dialogs. Requires `DialogData` in the base parameter.
+* `DialogUserControlView` and `DialogWindowView`
+  * Used as part of dialog creation. Makes sure some necessary parameters are valid.
   
 # Extention Methods
 `ComboBoxHighlight`\
