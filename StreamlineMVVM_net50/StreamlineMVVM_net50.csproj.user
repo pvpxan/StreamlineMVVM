@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Page Update="Controls\LoadingAnimation.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Dialogs\DialogBaseWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MessageBoxEnhanced\WindowsMessage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\ButtonExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\CheckBoxExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\FlatComboBox.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\GroupBoxImproved.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\ListBoxExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\ListViewExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\MergedResources.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\ScrollBarExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\TextBoxExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Templates\TreeViewExtended.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>
