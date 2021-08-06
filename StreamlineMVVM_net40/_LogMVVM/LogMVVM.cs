@@ -13,8 +13,10 @@ namespace StreamlineMVVM
 
     public static class LogMVVM
     {
-        private static ILogMVVM _ILogMVVM = null;
-        public static void SetLogHTTP(ILogMVVM logMVVM)
+        private static ILogMVVM _ILogMVVM = new LogDependency();
+        private static bool interfaceImplemented = false;
+
+        public static void SetLogMVVM(ILogMVVM logMVVM)
         {
             lock (_ILogMVVM)
             {
@@ -37,7 +39,7 @@ namespace StreamlineMVVM
 
         public static void Entry(string log)
         {
-            if (_ILogMVVM == null || LogOutput == false)
+            if (interfaceImplemented == false || LogOutput == false)
             {
                 return;
             }
@@ -47,12 +49,26 @@ namespace StreamlineMVVM
 
         public static void Exception(string log, Exception Ex)
         {
-            if (_ILogMVVM == null || LogOutput == false)
+            if (interfaceImplemented == false || LogOutput == false)
             {
                 return;
             }
 
             _ILogMVVM.Exception(log, Ex);
+        }
+
+        // Hack: Place holder to allow a static class to hold a static interface reference.
+        private class LogDependency : ILogMVVM
+        {
+            public void LogEntry(string log)
+            {
+
+            }
+
+            public void Exception(string log, Exception Ex)
+            {
+
+            }
         }
     }
 }
