@@ -59,7 +59,7 @@
     <Compile Include="Dialogs\DialogServiceClose.cs" />
     <Compile Include="Dialogs\DialogServiceOpen.cs" />
     <Compile Include="Dialogs\DialogViewModel.cs" />
-    <Compile Include="Log\LogInterface.cs" />
+    <Compile Include="_LogMVVM\LogMVVM.cs" />
     <Compile Include="MessageBoxEnhanced\MessageBoxEnhanced.cs" />
     <Compile Include="MessageBoxEnhanced\MessageBoxEnhancedBasic.cs" />
     <Compile Include="MessageBoxEnhanced\MessageBoxEnhancedParent.cs" />

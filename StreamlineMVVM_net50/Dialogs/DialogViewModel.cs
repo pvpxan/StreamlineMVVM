@@ -8,7 +8,7 @@ using System.Windows;
 namespace StreamlineMVVM
 {
     // Needed to extend a dialog control viewmodel.
-    public partial class DialogViewModel : ViewModelBase
+    public abstract class DialogViewModel : ViewModelBase
     {
         public WindowMessageResult Result { get; set; } = WindowMessageResult.Undefined;
         public DialogData Data { get; private set; } = null;
